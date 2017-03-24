@@ -1,0 +1,2 @@
+# ignore vagrant nonsense
+*.vagrant/
