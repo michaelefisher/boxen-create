@@ -54,7 +54,11 @@
       copy: src="{{ git_dir }}/powerline-shell/config.py.dist" dest="{{ git_dir }}/powerline-shell/config.py" owner="{{ user }}" group="{{ user }}"
 
     - name: Install powerline shell
-      command: "python {{ git_dir }}/powerline-shell/install.py"
+      command: "./install.py"
+      args:
+        chdir: "{{ git_dir }}/powerline-shell"
+      become: true
+      become_user: "{{ user }}"
 
     - name: Install VirtualBox and Vagrant
       apt:
