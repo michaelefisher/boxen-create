@@ -6,6 +6,8 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 
+VAGRANT_COMMAND = ARGV[0]
+
 system("
   if [ #{ARGV[0]} = 'up' ] || [ #{ARGV[0]} = 'provision' ]; then
     echo 'Running `vagrant up` or `vagrant provision`, so first creating data directory and linking files'
@@ -55,6 +57,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "/Users/michael/data", "/vagrant_data"
 
   # ssh settings
+
   config.ssh.insert_key = false
   config.ssh.private_key_path = ["/Users/michael/.ssh/michaelfisher.pem", "~/.vagrant.d/insecure_private_key"]
   config.ssh.forward_agent = true

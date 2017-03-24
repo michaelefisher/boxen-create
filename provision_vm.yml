@@ -55,8 +55,6 @@
 
     - name: Install powerline shell
       command: "python {{ git_dir }}/powerline-shell/install.py"
-      become: true
-      become_user: "{{ user  }}"
 
     - name: Install VirtualBox and Vagrant
       apt:
