@@ -65,5 +65,4 @@
       shell: "{{ item }}"
       with_items:
         - "curl -sSL https://get.rvm.io | bash"
-        - "rvm install 2.2.0"
 
