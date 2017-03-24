@@ -25,14 +25,15 @@
         path: "{{ git_dir }}"
         owner: "{{ user }}"
         group: "{{ user }}"
+        recurse: yes
 
     - name: delete things that we don't want
       file:
-        path: "/home/{{ item }}"
+        path: "/home/{{ user}}/{{ item }}"
         state: absent
       with_items:
         - '.bashrc'
-        - '.vim/'
+        - '.vim'
         - '.vimrc'
 
     - name: link all the files
@@ -46,13 +47,16 @@
       with_items:
         - '.bashrc'
         - '.vimrc'
-        - '.vim/'
+        - '.vim'
         - '.gitconfig'
 
+    - name: Copy powerline shell config
+      copy: src="{{ git_dir }}/powerline-shell/config.py.dist" dest="{{ git_dir }}/powerline-shell/config.py" owner="{{ user }}" group="{{ user }}"
+
     - name: Install powerline shell
-      command: ".{{ git_dir }}/powerline-shell/install.py"
+      command: "python {{ git_dir }}/powerline-shell/install.py"
       become: true
-      become_user: "{{ vagrant }}"
+      become_user: "{{ user  }}"
 
     - name: Install VirtualBox and Vagrant
       apt:

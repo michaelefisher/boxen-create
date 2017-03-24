@@ -7,8 +7,8 @@
 # you're doing.
 
 system("
-  if [ #{ARGV[0]} = 'up' ]; then
-    echo 'Running `vagrant up`, so first creating data director and linking files'
+  if [ #{ARGV[0]} = 'up' ] || [ #{ARGV[0]} = 'provision' ]; then
+    echo 'Running `vagrant up` or `vagrant provision`, so first creating data directory and linking files'
     if [ ! -d '$HOME/data' ]; then
     	mkdir -p $HOME/data
     fi
