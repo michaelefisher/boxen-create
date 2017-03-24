@@ -9,8 +9,11 @@
 system("
   if [ #{ARGV[0]} = 'up' ]; then
     echo 'Running `vagrant up`, so first creating data director and linking files'
-    mkdir -p ~/data/
-    cp provision_vm.yml ~/data/provision_vm.yml
+    if [ ! -d '$HOME/data' ]; then
+    	mkdir -p $HOME/data
+    fi
+    # Always copy to get a fresh playbook
+   	cp -f provision_vm.yml $HOME/data/provision_vm.yml
   fi
 ")
 
