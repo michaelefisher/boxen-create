@@ -17,7 +17,11 @@
       with_items:
         - { org: 'democrats', name: 'ppapi-hfa' }
         - { org: 'democrats', name: 'mdAPI' }
+        - { org: 'democrats', name: 'app-configuration-template' }
+        - { org: 'democrats', name: 'packer-python-base-ami' }
+        - { org: 'democrats', name: 'iwillvote-locate' }
         - { org: 'michaelefisher', name: 'dot-files' }
+        - { org: 'HillaryClinton', name: 'pocket-protector' }
         - { org: 'banga', name: 'powerline-shell' }
 
     - name: Change owner and group for git dir
