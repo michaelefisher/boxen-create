@@ -1,4 +1,4 @@
-.PHONY: clean package image provision config destroy
+.PHONY: provision vagrant release destroy
 
 SHELL := /bin/bash
 
