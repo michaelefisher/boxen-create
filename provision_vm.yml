@@ -1,0 +1,69 @@
+---
+- hosts: localhost
+  gather_facts: no
+  vars:
+   - user: vagrant
+   - git_dir: "/home/{{ user }}/git"
+
+  tasks:
+
+    - name: Clone some repos
+      git:
+        repo: "git@github.com:{{ item.org }}/{{ item.name }}.git"
+        dest: "{{ git_dir }}/{{ item.name }}"
+        accept_hostkey: yes
+        track_submodules: yes
+        force: yes
+      with_items:
+        - { org: 'democrats', name: 'ppapi-hfa' }
+        - { org: 'democrats', name: 'mdAPI' }
+        - { org: 'michaelefisher', name: 'dot-files' }
+        - { org: 'banga', name: 'powerline-shell' }
+
+    - name: Change owner and group for git dir
+      file:
+        path: "{{ git_dir }}"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+
+    - name: delete things that we don't want
+      file:
+        path: "/home/{{ item }}"
+        state: absent
+      with_items:
+        - '.bashrc'
+        - '.vim/'
+        - '.vimrc'
+
+    - name: link all the files
+      file:
+        src: "{{ git_dir }}/dot-files/{{ item }}"
+        dest: "/home/{{ user }}/{{ item }}"
+        state: link
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        force: yes
+      with_items:
+        - '.bashrc'
+        - '.vimrc'
+        - '.vim/'
+        - '.gitconfig'
+
+    - name: Install powerline shell
+      command: ".{{ git_dir }}/powerline-shell/install.py"
+      become: true
+      become_user: "{{ vagrant }}"
+
+    - name: Install VirtualBox and Vagrant
+      apt:
+        deb: "{{ item }}"
+      with_items:
+        - http://download.virtualbox.org/virtualbox/5.1.18/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb
+        - https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb
+
+    - name: Install rvm and install ruby 2.2.0
+      shell: "{{ item }}"
+      with_items:
+        - "curl -sSL https://get.rvm.io | bash"
+        - "rvm install 2.2.0"
+

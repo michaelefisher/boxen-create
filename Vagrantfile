@@ -5,6 +5,15 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+
+system("
+  if [ #{ARGV[0]} = 'up' ]; then
+    echo 'Running `vagrant up`, so first creating data director and linking files'
+    mkdir -p ~/data/
+    ln -s provision_vm.yml ~/data/provision_vm.yml
+  fi
+")
+
 Vagrant.configure("2") do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
