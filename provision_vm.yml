@@ -23,6 +23,7 @@
         - { org: 'michaelefisher', name: 'dot-files' }
         - { org: 'HillaryClinton', name: 'pocket-protector' }
         - { org: 'banga', name: 'powerline-shell' }
+        - { org: 'powerline', name: 'fonts' }
 
     - name: Change owner and group for git dir
       file:
@@ -63,6 +64,11 @@
         chdir: "{{ git_dir }}/powerline-shell"
       become: true
       become_user: "{{ user }}"
+
+    - name: Install powerline shell fonts
+      command: "./install.sh"
+      args:
+        chdir: "{{ git_dir }}/fonts"
 
     - name: Install VirtualBox and Vagrant
       apt:
