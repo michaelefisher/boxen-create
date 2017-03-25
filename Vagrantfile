@@ -7,6 +7,8 @@
 # you're doing.
 
 VAGRANT_COMMAND = ARGV[0]
+API_KEY = ENV['DIGITAL_OCEAN_API_KEY']
+puts API_KEY
 
 system("
   if [ #{ARGV[0]} = 'up' ] || [ #{ARGV[0]} = 'provision' ]; then
@@ -56,10 +58,21 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   config.vm.synced_folder "/Users/michael/data", "/vagrant_data"
 
+  # Also be able to provision Digital Ocean boxes
+
+  config.vm.provider :digital_ocean do |provider, override|
+    provider.token = API_KEY.to_s
+    provider.vm.box = 'digital_ocean'
+    provider.image = "Ubuntu-16-04-x64"
+    provider.region = "nyc2"
+    provider.size = '1gb'
+  end
+
   # ssh settings
 
   config.ssh.insert_key = false
   config.ssh.private_key_path = ["/Users/michael/.ssh/michaelfisher.pem", "~/.vagrant.d/insecure_private_key"]
+
   config.ssh.forward_agent = true
   config.vm.provision "file", source: "/Users/michael/.ssh/michaelfisher.pub", destination: "~/.ssh/authorized_keys"
   config.vm.provision "shell", inline: <<-EOC
