@@ -1,5 +1,13 @@
 # vagrant-setup
 
+## macOS > 10.5
+
+```
+$ make macos
+```
+
+## Ubuntu 16.04 using provider VirtualBox
+
 Sets up a basic computing environment in Ubuntu 16.04. Uses Vagrant shell and ansible provisioning to:
 
 1. Clone repos you need
