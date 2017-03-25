@@ -1,6 +1,6 @@
 ---
 - hosts: localhost
-  gather_facts: no
+  gather_facts: yes
   vars:
    - user: vagrant
    - git_dir: "/home/{{ user }}/git"
@@ -76,15 +76,38 @@
       with_items:
         - http://download.virtualbox.org/virtualbox/5.1.18/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb
         - https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb
+      when: ansible_os_family == 'Debian'
+
+    - name: Install homebrew
+      command: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+      when: ansible_os_family == 'Darwin'
+
+    - name: Install homebrew applications
+      homebrew:
+        name: "{{ item }}"
+        state: present
+        upgrade_all: yes
+      with_items:
+        - awscli
+        - cask
+        - tmux
+        - 'cask emacs'
+        - 'Caskroom/cask/virtualbox'
+        - 'Caskroom/cask/vagrant'
+        - 'postgresql@9.5'
+      when: ansible_os_family == 'Darwin'
 
     - name: Install other things
       apt:
         name: "{{ item }}"
       with_items:
         - gnupg2
+        - awscli
+      when: ansible_os_family == 'Debian'
 
     - name: Install rvm and install ruby 2.2.0
-      shell: "{{ item }}"
+      command: "{{ item }}"
       with_items:
         - "curl -sSL https://get.rvm.io | bash"
+        - "rvm instal 2.2.0"
 
