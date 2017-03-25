@@ -1,6 +1,6 @@
 #! /bin/bash
 
-KEY="/Users/michael/.ssh/michaelfisher.pem"
+KEY="/Users/michael/.ssh/michaelfisher"
 
 if [[ ! -a ${KEY} ]];then
   echo "Before provisioning, install ssh private key $KEY"
