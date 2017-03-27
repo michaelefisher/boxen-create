@@ -95,6 +95,7 @@
         - 'Caskroom/cask/virtualbox'
         - 'Caskroom/cask/vagrant'
         - 'postgresql@9.5'
+        - jq
       when: ansible_os_family == 'Darwin'
 
     - name: Install other things
