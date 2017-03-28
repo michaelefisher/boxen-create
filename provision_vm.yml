@@ -96,6 +96,8 @@
         - 'Caskroom/cask/vagrant'
         - 'postgresql@9.5'
         - jq
+        - watch
+        - xz
       when: ansible_os_family == 'Darwin'
 
     - name: Install other things
