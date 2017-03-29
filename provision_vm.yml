@@ -98,6 +98,8 @@
         - jq
         - watch
         - xz
+        - groovy
+        - Caskroom/versions/java7
       when: ansible_os_family == 'Darwin'
 
     - name: Install other things
@@ -112,5 +114,4 @@
       command: "{{ item }}"
       with_items:
         - "curl -sSL https://get.rvm.io | bash"
-        - "rvm instal 2.2.0"
 
