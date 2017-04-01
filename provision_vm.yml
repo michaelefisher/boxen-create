@@ -2,10 +2,13 @@
 - hosts: localhost
   gather_facts: yes
   vars:
-   - user: vagrant
-   - git_dir: "/home/{{ user }}/git"
+   - user: "{{ lookup('env', 'LOGNAME') }}"
+   - git_dir: "~/git"
 
   tasks:
+
+    - name: Make git dir
+      file: path="{{ git_dir }}" state=directory
 
     - name: Clone some repos
       git:
@@ -15,13 +18,7 @@
         track_submodules: yes
         force: yes
       with_items:
-        - { org: 'democrats', name: 'ppapi-hfa' }
-        - { org: 'democrats', name: 'mdAPI' }
-        - { org: 'democrats', name: 'app-configuration-template' }
-        - { org: 'democrats', name: 'packer-python-base-ami' }
-        - { org: 'democrats', name: 'iwillvote-locate' }
         - { org: 'michaelefisher', name: 'dot-files' }
-        - { org: 'HillaryClinton', name: 'pocket-protector' }
         - { org: 'banga', name: 'powerline-shell' }
         - { org: 'powerline', name: 'fonts' }
 
@@ -29,12 +26,11 @@
       file:
         path: "{{ git_dir }}"
         owner: "{{ user }}"
-        group: "{{ user }}"
         recurse: yes
 
     - name: delete things that we don't want
       file:
-        path: "/home/{{ user}}/{{ item }}"
+        path: "~/{{ item }}"
         state: absent
       with_items:
         - '.bashrc'
@@ -44,10 +40,9 @@
     - name: link all the files
       file:
         src: "{{ git_dir }}/dot-files/{{ item }}"
-        dest: "/home/{{ user }}/{{ item }}"
+        dest: "~/{{ item }}"
         state: link
         owner: "{{ user }}"
-        group: "{{ user }}"
         force: yes
       with_items:
         - '.bashrc'
@@ -55,8 +50,15 @@
         - '.vim'
         - '.gitconfig'
 
+    - name: Write out bash_profile
+      blockinfile:
+        dest: "~/.bash_profile"
+        insertafter: EOF
+        create: yes
+        content: "source ~/.bashrc"
+
     - name: Copy powerline shell config
-      copy: src="{{ git_dir }}/powerline-shell/config.py.dist" dest="{{ git_dir }}/powerline-shell/config.py" owner="{{ user }}" group="{{ user }}"
+      copy: src="{{ git_dir }}/powerline-shell/config.py.dist" dest="{{ git_dir }}/powerline-shell/config.py" owner="{{ user }}"
 
     - name: Install powerline shell
       command: "./install.py"
@@ -70,38 +72,6 @@
       args:
         chdir: "{{ git_dir }}/fonts"
 
-    - name: Install VirtualBox and Vagrant
-      apt:
-        deb: "{{ item }}"
-      with_items:
-        - http://download.virtualbox.org/virtualbox/5.1.18/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb
-        - https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb
-      when: ansible_os_family == 'Debian'
-
-    - name: Install homebrew
-      command: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-      when: ansible_os_family == 'Darwin'
-
-    - name: Install homebrew applications
-      homebrew:
-        name: "{{ item }}"
-        state: present
-        upgrade_all: yes
-      with_items:
-        - awscli
-        - cask
-        - tmux
-        - 'cask emacs'
-        - 'Caskroom/cask/virtualbox'
-        - 'Caskroom/cask/vagrant'
-        - 'postgresql@9.5'
-        - jq
-        - watch
-        - xz
-        - groovy
-        - Caskroom/versions/java7
-      when: ansible_os_family == 'Darwin'
-
     - name: Install other things
       apt:
         name: "{{ item }}"
@@ -110,8 +80,9 @@
         - awscli
       when: ansible_os_family == 'Debian'
 
-    - name: Install rvm and install ruby 2.2.0
-      command: "{{ item }}"
-      with_items:
-        - "curl -sSL https://get.rvm.io | bash"
+    - name: Copy dynamic profiles into iTerm2
+      copy:
+        src: "tmux_profiles.json"
+        dest: "~/Library/Application Support/iTerm2/DynamicProfiles/tmux_profiles.json"
+      when: ansible_os_family == 'Darwin'
 

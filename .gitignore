@@ -1,2 +1,5 @@
 # ignore vagrant nonsense
 *.vagrant/
+
+# ignore ansible retry
+*.retry
