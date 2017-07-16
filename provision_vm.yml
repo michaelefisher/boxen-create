@@ -56,6 +56,7 @@
         insertafter: EOF
         create: yes
         content: "source ~/.bashrc"
+      when: ansible_os_family == 'Darwin'
 
     - name: Copy powerline shell config
       copy: src="{{ git_dir }}/powerline-shell/config.py.dist" dest="{{ git_dir }}/powerline-shell/config.py" owner="{{ user }}"
