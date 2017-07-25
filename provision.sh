@@ -22,5 +22,5 @@ sudo pip install ansible
 if [[ `uname` == 'Darwin' ]]; then
   ansible-playbook -i hosts -l localhost provision_vm.yml -c local;
 else
-	ansible-playbook -i hosts -l `hostname -s` provision_vm.yml;
+  ansible-playbook -i hosts -l `hostname -s` provision_vm.yml;
 fi
