@@ -1,12 +1,11 @@
 ---
-- hosts: localhost
+- hosts: all
   gather_facts: yes
   vars:
    - user: "{{ lookup('env', 'LOGNAME') }}"
    - git_dir: "~/git"
 
   tasks:
-
     - name: Make git dir
       file: path="{{ git_dir }}" state=directory
 
@@ -17,9 +16,9 @@
         accept_hostkey: yes
         track_submodules: yes
         force: yes
+        key_file: "/home/{{ user }}/.ssh/walter"
       with_items:
         - { org: 'michaelefisher', name: 'dot-files' }
-        - { org: 'banga', name: 'powerline-shell' }
         - { org: 'powerline', name: 'fonts' }
 
     - name: Change owner and group for git dir
@@ -36,6 +35,10 @@
         - '.bashrc'
         - '.vim'
         - '.vimrc'
+        - '.bash_aliases'
+        - '.bash-powerline.sh'
+        - '.gitconfig'
+        - '.tmux.conf'
 
     - name: link all the files
       file:
@@ -49,6 +52,9 @@
         - '.vimrc'
         - '.vim'
         - '.gitconfig'
+        - '.bash-powerline.sh'
+        - '.bash_aliases'
+        - '.tmux.conf'
 
     - name: Write out bash_profile
       blockinfile:
@@ -58,22 +64,21 @@
         content: "source ~/.bashrc"
       when: ansible_os_family == 'Darwin'
 
-    - name: Copy powerline shell config
-      copy: src="{{ git_dir }}/powerline-shell/config.py.dist" dest="{{ git_dir }}/powerline-shell/config.py" owner="{{ user }}"
-
-    - name: Install powerline shell
-      command: "./install.py"
-      args:
-        chdir: "{{ git_dir }}/powerline-shell"
-      become: true
-      become_user: "{{ user }}"
-
     - name: Install powerline shell fonts
       command: "./install.sh"
       args:
         chdir: "{{ git_dir }}/fonts"
+      when: ansible_os_family == 'Darwin'
 
-    - name: Install other things
+    - name: Install other things in Linux
+      apt:
+        name: "{{ item }}"
+      with_items:
+        - gnupg2
+        - awscli
+      when: ansible_os_family == 'Debian'
+
+    - name: Install other things in macOS
       apt:
         name: "{{ item }}"
       with_items:
