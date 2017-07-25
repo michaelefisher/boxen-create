@@ -1,9 +1,18 @@
 # boxen-create
 
-## macOS > 10.5
+## Physical host or VPS
 
+1. Create a `hosts` file:
 ```
-$ make macos
+[localhost]
+127.0.0.1
+
+[miss-piggy]
+piggy.hostname.org
+```
+2. Run command:
+```
+$ make provision
 ```
 
 Make sure to install MacPorts by hand. It is easier: https://www.macports.org
