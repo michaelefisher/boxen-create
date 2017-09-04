@@ -15,6 +15,9 @@ if [[ $HOSTS ]]; then
   ssh-copy-id -i $KEY $USER@$HOSTS
 fi
 
+# install brew
+curl -s https://raw.githubusercontent.com/daemonza/setupmac/master/start.sh | /bin/bash
+
 # get pip and install ansible
 
 /usr/bin/curl https://bootstrap.pypa.io/get-pip.py > /tmp/get-pip.py
