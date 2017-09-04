@@ -19,7 +19,6 @@
         key_file: "/home/{{ user }}/.ssh/walter"
       with_items:
         - { org: 'michaelefisher', name: 'dot-files' }
-        - { org: 'powerline', name: 'fonts' }
 
     - name: Change owner and group for git dir
       file:
