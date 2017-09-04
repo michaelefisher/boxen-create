@@ -2,15 +2,18 @@
 
 HOSTS=$1
 USER="michael"
-KEY="/Users/$USER/.ssh/michaelfisher"
+KEYNAME=$2
+KEY="/Users/$USER/.ssh/$KEYNAME"
 
 if [[ ! -a ${KEY} ]];then
   echo "Before provisioning, install ssh private key $KEY"
   exit 1
 fi
 
-echo "copying ssh key to server"
-ssh-copy-id -i $KEY $USER@$HOSTS
+if [[ $HOSTS ]]; then
+  echo "copying ssh key to server"
+  ssh-copy-id -i $KEY $USER@$HOSTS
+fi
 
 # get pip and install ansible
 
