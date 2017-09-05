@@ -63,12 +63,6 @@
         content: "source ~/.bashrc"
       when: ansible_os_family == 'Darwin'
 
-    - name: Install powerline shell fonts
-      command: "./install.sh"
-      args:
-        chdir: "{{ git_dir }}/fonts"
-      when: ansible_os_family == 'Darwin'
-
     - name: Install other things in Linux
       apt:
         name: "{{ item }}"
