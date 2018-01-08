@@ -11,12 +11,12 @@
 
     - name: Clone some repos
       git:
-        repo: "git@github.com:{{ item.org }}/{{ item.name }}.git"
+        repo: "ssh://git@github.com/{{ item.org }}/{{ item.name }}.git"
         dest: "{{ git_dir }}/{{ item.name }}"
         accept_hostkey: yes
         track_submodules: yes
         force: yes
-        key_file: "/home/{{ user }}/.ssh/walter"
+        executable: /usr/local/bin/git
       with_items:
         - { org: 'michaelefisher', name: 'dot-files' }
 
