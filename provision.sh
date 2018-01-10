@@ -1,7 +1,9 @@
 #! /bin/bash
 
+# ./provision.sh localhost michaelfisher michael
+
 HOSTS=$1
-USER="michael"
+USER=$3
 KEYNAME=$2
 KEY="/Users/$USER/.ssh/$KEYNAME"
 
@@ -10,13 +12,13 @@ if [[ ! -a ${KEY} ]];then
   exit 1
 fi
 
-if [[ $HOSTS ]]; then
+if [[ $HOSTS != localhost ]]; then
   echo "copying ssh key to server"
   ssh-copy-id -i $KEY $USER@$HOSTS
 fi
 
 # install brew
-curl -s https://raw.githubusercontent.com/daemonza/setupmac/master/start.sh | /bin/bash
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # get pip and install ansible
 
