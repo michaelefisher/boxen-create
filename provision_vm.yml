@@ -16,9 +16,9 @@
         accept_hostkey: yes
         track_submodules: yes
         force: yes
-        executable: /usr/local/bin/git
       with_items:
         - { org: 'michaelefisher', name: 'dot-files' }
+        - { org: 'powerline', name: 'fonts' }
 
     - name: Change owner and group for git dir
       file:
@@ -63,6 +63,11 @@
         content: "source ~/.bashrc"
       when: ansible_os_family == 'Darwin'
 
+    - name: Install powerline shell fonts
+      command: "./install.sh"
+      args:
+        chdir: "{{ git_dir }}/fonts"
+
     - name: Install other things in Linux
       apt:
         name: "{{ item }}"
@@ -78,10 +83,3 @@
         - gnupg2
         - awscli
       when: ansible_os_family == 'Debian'
-
-    - name: Copy dynamic profiles into iTerm2
-      copy:
-        src: "tmux_profiles.json"
-        dest: "~/Library/Application Support/iTerm2/DynamicProfiles/tmux_profiles.json"
-      when: ansible_os_family == 'Darwin'
-
