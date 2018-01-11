@@ -77,9 +77,10 @@
       when: ansible_os_family == 'Debian'
 
     - name: Install other things in macOS
-      apt:
+      homebrew:
         name: "{{ item }}"
       with_items:
         - gnupg2
         - awscli
-      when: ansible_os_family == 'Debian'
+        - todo-txt
+      when: ansible_os_family == 'Darwin'
