@@ -82,5 +82,7 @@
       with_items:
         - gnupg2
         - awscli
-        - todo-txt
+        - pyenv-virtualenv
+        - pyenv-virtualenvwrapper
+        - tmux
       when: ansible_os_family == 'Darwin'
