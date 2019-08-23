@@ -19,6 +19,13 @@
       with_items:
         - { org: 'michaelefisher', name: 'dot-files' }
         - { org: 'powerline', name: 'fonts' }
+        - { org: 'corybooker', name: 'serverless' }
+        - { org: 'corybooker', name: 'aws-cloudformation' }
+        - { org: 'corybooker', name: 'civis' }
+        - { org: 'corybooker', name: 'cloudflare-workers-js' }
+        - { org: 'wpcomvip', name: 'cory-booker' }
+        - { org: 'corybooker', name: 'docker-wordpress-vip-go' }
+        - { org: 'corybooker', name: 'dbt-projects' }
 
     - name: Change owner and group for git dir
       file:
@@ -73,16 +80,11 @@
         name: "{{ item }}"
       with_items:
         - gnupg2
-        - awscli
       when: ansible_os_family == 'Debian'
 
     - name: Install other things in macOS
       homebrew:
         name: "{{ item }}"
       with_items:
-        - gnupg2
-        - awscli
-        - pyenv-virtualenv
-        - pyenv-virtualenvwrapper
-        - tmux
+        - "brew.txt"
       when: ansible_os_family == 'Darwin'
