@@ -19,12 +19,13 @@
       with_items:
         - { org: 'michaelefisher', name: 'dot-files' }
         - { org: 'powerline', name: 'fonts' }
-
-    - name: Change owner and group for git dir
-      file:
-        path: "{{ git_dir }}"
-        owner: "{{ user }}"
-        recurse: yes
+        - { org: 'corybooker', name: 'serverless' }
+        - { org: 'corybooker', name: 'aws-cloudformation' }
+        - { org: 'corybooker', name: 'civis' }
+        - { org: 'corybooker', name: 'cloudflare-workers-js' }
+        - { org: 'wpcomvip', name: 'cory-booker' }
+        - { org: 'corybooker', name: 'docker-wordpress-vip-go' }
+        - { org: 'corybooker', name: 'dbt-projects' }
 
     - name: delete things that we don't want
       file:
@@ -70,19 +71,10 @@
 
     - name: Install other things in Linux
       apt:
-        name: "{{ item }}"
-      with_items:
-        - gnupg2
-        - awscli
+        name: gnupg2
       when: ansible_os_family == 'Debian'
 
     - name: Install other things in macOS
       homebrew:
-        name: "{{ item }}"
-      with_items:
-        - gnupg2
-        - awscli
-        - pyenv-virtualenv
-        - pyenv-virtualenvwrapper
-        - tmux
+        name: ['adns','augeas','autoconf','automake','certbot','composer','coreutils','cscope','dbt','dialog','doctl','freetype','gdbm','gettext','ghostscript','giflib','gmp','gnupg','gnutls','icu4c','imagemagick','isl','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','macvim','mpfr','nettle','nmap','node','npth','nvm','openjpeg','pcre','pinentry','qt','rbenv','readline','redis','s3cmd','the_silver_searcher','tmux','xz','yarn']
       when: ansible_os_family == 'Darwin'
