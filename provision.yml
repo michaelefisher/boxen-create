@@ -76,5 +76,5 @@
 
     - name: Install other things in macOS
       homebrew:
-        name: ['adns','augeas','autoconf','automake','certbot','composer','coreutils','cscope','dbt','dialog','doctl','freetype','gdbm','gettext','ghostscript','giflib','gmp','gnupg','gnutls','icu4c','imagemagick','isl','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','macvim','mpfr','nettle','nmap','node','npth','nvm','openjpeg','pcre','pinentry','qt','rbenv','readline','redis','s3cmd','the_silver_searcher','tmux','xz','yarn']
+        name: ['adns','augeas','autoconf','automake','certbot','composer','coreutils','cscope','dialog','doctl','freetype','gdbm','gettext','ghostscript','giflib','gmp','gnupg','gnutls','icu4c','imagemagick','isl','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','macvim','mpfr','nettle','nmap','node','npth','nvm','openjpeg','pcre','pinentry','qt','rbenv','readline','redis','s3cmd','the_silver_searcher','tmux','xz','yarn']
       when: ansible_os_family == 'Darwin'
