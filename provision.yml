@@ -57,6 +57,16 @@
         - '.bash_aliases'
         - '.tmux.conf'
         - '.ssh/config'
+        -
+    - name: link hosts file
+      file:
+        src: "{{ git_dir }}/dot-files/{{ item }}"
+        dest: "~/boxen-create/{{ item }}"
+        state: link
+        owner: "{{ user }}"
+        force: yes
+      with_items:
+        - 'hosts'
 
     - name: Write out bash_profile
       blockinfile:
