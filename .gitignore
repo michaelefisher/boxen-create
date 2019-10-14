@@ -6,3 +6,6 @@
 
 # ignore hosts
 hosts
+
+# ignore IDE
+*idea*
