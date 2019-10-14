@@ -1,14 +1,19 @@
 #! /usr/bin/env python
 
 import os
-
+import configparser
 import digitalocean
 
 DROPLETS = []
-DROPLETS = [
-    {'name': 'garfield'},
-    {'name': 'cory2020'},
-]
+
+
+def read_config():
+    config = configparser.ConfigParser()
+    config.read('hosts')
+    for key in config['do']:
+        key_name = key.split(' ')[0]
+        droplet = {'name': key_name}
+        DROPLETS.append(droplet)
 
 
 def droplet_manager_api():
@@ -80,6 +85,7 @@ def create_droplet(list_to_create):
 
 
 if __name__ == '__main__':
+    read_config()
     create = should_create_droplet(droplet_dict(get_current_droplets_api()), DROPLETS)
     shutdown = should_shutdown_droplet(droplet_dict(get_current_droplets_api()), DROPLETS)
     if create:
