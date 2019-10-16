@@ -12,11 +12,6 @@ if [[ ! -a ${KEY} ]];then
   exit 1
 fi
 
-if [[ $HOSTS != localhost ]]; then
-  echo "copying ssh key to server"
-  ssh-copy-id -i $KEY $USER@$HOSTS
-fi
-
 # install brew
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
@@ -27,8 +22,11 @@ sudo /usr/bin/python /tmp/get-pip.py
 # install ansible and only run playbook if that succeeds
 sudo pip install ansible
 
-if [[ `uname` == 'Darwin' ]]; then
+if [[ -z ${HOSTS} ]]; then
+	printf "HOSTS...\n"
   ansible-playbook -i hosts -l localhost provision.yml -c local;
+elif [[ $HOSTS ]]; then
+	ansible-playbook -i hosts -l $HOSTS provision.yml;
 else
   ansible-playbook -i hosts -l `hostname -s` provision.yml;
 fi

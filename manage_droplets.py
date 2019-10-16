@@ -15,7 +15,6 @@ def read_config():
         droplet = {'name': key_name}
         DROPLETS.append(droplet)
 
-
 def droplet_manager_api():
     manager = digitalocean.Manager(token=os.getenv('DIGITAL_OCEAN_TOKEN'))
 
