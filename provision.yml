@@ -14,7 +14,7 @@
         repo: "ssh://git@github.com/{{ item.org }}/{{ item.name }}.git"
         dest: "{{ git_dir }}/{{ item.name }}"
         accept_hostkey: yes
-        track_submodules: yes
+        track_submodules: no
         force: yes
       with_items:
         - { org: 'michaelefisher', name: 'dot-files' }
