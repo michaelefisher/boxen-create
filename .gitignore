@@ -4,8 +4,5 @@
 # ignore ansible retry
 *.retry
 
-# ignore hosts
-hosts
-
 # ignore IDE
 *idea*
