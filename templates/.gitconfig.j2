@@ -1,0 +1,21 @@
+[user]
+	name = Michael E Fisher
+	email = fisher@corybooker.com
+[push]
+	default = simple
+[alias]
+	co = checkout
+	br = branch
+	ct = commit
+	st = status
+	aa = add --all :/
+	pu = push
+[credential]
+	helper = cache
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[help]
+	autocorrect = 1

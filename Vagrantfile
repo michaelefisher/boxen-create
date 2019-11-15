@@ -5,6 +5,20 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+
+VAGRANT_COMMAND = ARGV[0]
+
+system("
+  if [ #{ARGV[0]} = 'up' ] || [ #{ARGV[0]} = 'provision' ]; then
+    echo 'Running `vagrant up` or `vagrant provision`, so first creating data directory and linking files'
+    if [ ! -d '$HOME/data' ]; then
+    	mkdir -p $HOME/data
+    fi
+    # Always copy to get a fresh playbook
+   	cp -f provision_vm.yml $HOME/data/provision_vm.yml
+  fi
+")
+
 Vagrant.configure("2") do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -43,8 +57,9 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "/Users/michael/data", "/vagrant_data"
 
   # ssh settings
+
   config.ssh.insert_key = false
-  config.ssh.private_key_path = ["/Users/michael/.ssh/michaelfisher.pem", "~/.vagrant.d/insecure_private_key"]
+  config.ssh.private_key_path = ["/Users/michael/.ssh/michaelfisher", "~/.vagrant.d/insecure_private_key"]
   config.ssh.forward_agent = true
   config.vm.provision "file", source: "/Users/michael/.ssh/michaelfisher.pub", destination: "~/.ssh/authorized_keys"
   config.vm.provision "shell", inline: <<-EOC
@@ -56,13 +71,13 @@ Vagrant.configure("2") do |config|
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
-  config.vm.provider "virtualbox" do |vb|
+  #config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
   #   vb.gui = true
   #
      # Customize the amount of memory on the VM:
-     vb.memory = "3072"
-   end
+  #   vb.memory = "3072"
+  # end
   #
   # View the documentation for the provider you are using for more
   # information on available options.

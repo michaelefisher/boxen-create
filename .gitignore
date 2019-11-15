@@ -1,2 +1,11 @@
-# ignore vagrant nonsense
-*.vagrant/
+# ignore ansible retry
+*.retry
+
+# Ansible password file
+ansible_password
+
+# ignore IDE
+*idea*
+  ControlPath ~/.ssh/sockets/%r@%h:%p
+
+*DS_Store*
