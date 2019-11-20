@@ -185,12 +185,14 @@
 	</data>
 	<key>UseBrightBold</key>
 	<false/>
+	<key>WindowTitle</key>
+	<string>michael@dr-bunsen-honeydew</string>
 	<key>columnCount</key>
-	<integer>120</integer>
+	<integer>160</integer>
 	<key>name</key>
 	<string>Dracula</string>
 	<key>rowCount</key>
-	<integer>100</integer>
+	<integer>81</integer>
 	<key>type</key>
 	<string>Window Settings</string>
 </dict>

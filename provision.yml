@@ -4,6 +4,7 @@
   vars:
    - user: "{{ ansible_env.LOGNAME }}"
    - home: "{{ ansible_env.HOME }}"
+   - zsh_custom: "{{ home }}/.oh-my-zsh/custom"
    - git_dir: "{{ home }}/git"
    - python_site: "{{ home}}/.local/bin/"
    - civis_redshift_user: "michaelfisher"
@@ -22,6 +23,16 @@
         - "{{ home }}/.config/pgcli"
       become: true
       become_method: sudo
+      tags:
+        - files
+
+    - name: install oh-my-zsh
+      git:
+        repo: "ssh://git@github.com/robbyrussell/oh-my-zsh.git"
+        dest: "{{ home }}/.oh-my-zsh"
+        accept_hostkey: yes
+        track_submodules: no
+        force: yes
       tags:
         - files
 
@@ -60,6 +71,22 @@
         - '.tmux.conf'
         - '.gitmodules'
         - '.gnupg/gpg.conf'
+        - '.zshrc'
+      tags:
+        - files
+
+    - name: Install spaceship zsh theme
+      git:
+        repo: "ssh://git@github.com/denysdovhan/spaceship-prompt.git"
+        dest: "{{ zsh_custom }}/themes/spaceship-prompt"
+      tags:
+        - files
+
+    - name: Symlink spaceship into place
+      file:
+        src: "{{ zsh_custom }}/themes/spaceship-prompt/spaceship.zsh-theme"
+        dest: "{{ zsh_custom }}/themes/spaceship.zsh-theme"
+        state: link
       tags:
         - files
 
@@ -101,23 +128,37 @@
         - { org: 'corybooker', name: 'docker-wordpress-vip-go' }
         - { org: 'corybooker', name: 'dbt-projects' }
 
-    - name: install oh-my-zsh
-      git:
-        repo: "ssh://git@github.com/robbyrussell/oh-my-zsh.git"
-        dest: "~/.oh-my-zsh"
-        accept_hostkey: yes
-        track_submodules: no
-        force: yes
-
     - name: Install homebrew items
       homebrew:
-        name: ['awscli', 'adns','augeas','autoconf','automake','reattach-to-user-namespace','pgcli','postgresql','certbot','composer','coreutils','cscope','cmake','dialog','doctl','freetype','gdbm','gettext','ghostscript','giflib','gmp','gnupg','gnutls','icu4c','imagemagick','isl','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','macvim','mpfr','nettle','nmap','node','npth','nvm','mas','openjpeg','pcre','pinentry','qt','rbenv','readline','redis','s3cmd','the_silver_searcher','tmux','xz','yarn']
+        name: ['awscli', 'adns','augeas','autoconf','automake','reattach-to-user-namespace','pgcli','postgresql','certbot','composer','coreutils','cscope','cmake','dialog','doctl','freetype','gdbm','gettext','ghostscript','giflib','gmp','gnupg','gnutls','icu4c','imagemagick','isl','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','macvim','mpfr','nettle','nmap','node','npth','nvm','mas','openjpeg','pcre','pinentry','qt','rbenv','readline','redis','s3cmd','the_silver_searcher','tmux','xz','yarn','watch']
       when: ansible_os_family == 'Darwin'
       tags:
         - brew
 
+    - name: Install homebrew cask items
+      homebrew_cask:
+        name: "{{ item.name }}"
+      with_items:
+        - { name: omnifocus }
+      tags:
+        - brew
+      when: ansible_os_family == 'Darwin'
+
     - name: Install Mac App Store updates
       command: mas upgrade
+      when:
+        ansible_os_family == 'Darwin'
+      register: mas
+      become: true
+      become_method: sudo
+      tags:
+        - appstore
+
+    - name: Install Mac App Store updates
+      command: "mas install {{ item.id }}"
+      with_items:
+        - { name: twitteriffic, id: 1289378661 }
+        - { name: deliveries, id: 525372278 }
       when:
         ansible_os_family == 'Darwin'
       register: mas
