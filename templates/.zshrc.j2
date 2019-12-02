@@ -74,3 +74,6 @@ function setup() {
 	cwd=$PWD
 	$(cd ${GIT}/aws-cloudformation && `make setup 2>&1 /dev/null` && cd $cwd)
 }
+
+# gam
+gam() { "/Users/michael/bin/gam/gam" "$@" ; }
