@@ -140,15 +140,43 @@ au BufNewFile,BufRead *.py
     \ set expandtab |
     \ set autoindent |
     \ set fileformat=unix |
+    \ set filetype=python |
 
 " shell scripts
 au BufNewFile,BufRead *.sh
     \ set tabstop=2 |
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
+    \ set expandtab |
+    \ set foldmethod=syntax |
+    \ set filetype=sh |
 
-" web files
-au BufNewFile,BufRead *.js, *.html, *.css, *.ts
+" html
+au BufNewFile,BufRead *.{htm,html}
+    \ set filetype=html |
+    \ set expandtab |
+    \ set foldmethod=syntax |
+    \ set filetype=html |
+    \ set tabstop=2 |
+    \ set softtabstop=2 |
+    \ set shiftwidth=2 |
+
+" css
+au BufNewFile,BufRead *.{css,scss}
+    \ set filetype=css |
+    \ set expandtab |
+    \ set foldmethod=syntax |
+    \ set filetype=css |
+    \ set tabstop=2 |
+    \ set softtabstop=2 |
+    \ set shiftwidth=2 |
+
+" js
+au BufNewFile,BufRead *.{js,jsx,ts}
+    \ set filetype=javascript |
+    \ set expandtab |
+    \ set foldmethod=syntax |
+    \ set filetype=js |
     \ set tabstop=2 |
     \ set softtabstop=2 |
     \ set shiftwidth=2 |

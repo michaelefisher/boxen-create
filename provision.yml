@@ -127,6 +127,7 @@
         dest: "{{ git_dir }}/{{ item.name }}"
         accept_hostkey: yes
         track_submodules: no
+        force: yes
       with_items:
         - { org: 'powerline', name: 'fonts' }
         - { org: 'corybooker', name: 'serverless' }
@@ -149,6 +150,7 @@
         name: "{{ item.name }}"
       with_items:
         - { name: omnifocus }
+        - { name: firefox }
       tags:
         - brew
       when: ansible_os_family == 'Darwin'
