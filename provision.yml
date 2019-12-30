@@ -262,6 +262,13 @@
       tags:
         - ruby
 
+    - name: Upgrade Linux packages
+      apt:
+        upgrade: dist
+      become: true
+      become_method: sudo
+      when: ansible_os_family == 'Debian'
+
     - name: Clone rbenv repository
       git: repo=ssh://git@github.com/rbenv/rbenv.git
            dest={{ home }}/.rbenv
