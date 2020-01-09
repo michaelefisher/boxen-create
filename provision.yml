@@ -150,7 +150,6 @@
         name: "{{ item.name }}"
       with_items:
         - { name: omnifocus }
-        - { name: firefox }
       tags:
         - brew
       when: ansible_os_family == 'Darwin'
@@ -324,7 +323,6 @@
       command: "{{ item.command }}"
       with_items:
         - { command: "brew cleanup -s" }
-        - { command: "rm -rf $(brew --cache)" }
       when: ansible_os_family == 'Darwin'
 
     - name: add {{extra_path}} to path
