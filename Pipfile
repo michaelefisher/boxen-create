@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 python-digitalocean = "*"
 ansible = "*"
+ansible-playbook = "*"
 
 [requires]
 python_version = "3.7"
