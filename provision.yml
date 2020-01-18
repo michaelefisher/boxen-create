@@ -150,6 +150,7 @@
         name: "{{ item.name }}"
       with_items:
         - { name: omnifocus }
+        - { name: signal }
       tags:
         - brew
       when: ansible_os_family == 'Darwin'
