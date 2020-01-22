@@ -2,5 +2,3 @@
 dr-bunsen-honeydew ansible_connection=local ansible_user=michael ansible_python_interpreter=/usr/local/bin/python3
 [macs]
 dr-bunsen-honeydew ansible_port=3333 ansible_user=michael ansible_python_interpreter=/usr/local/bin/python3
-[do]
-cory2020 ansible_host=cory2020 ansible_user=michael ansible_python_interpreter=/usr/bin/python3
