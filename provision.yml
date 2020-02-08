@@ -130,13 +130,6 @@
         force: yes
       with_items:
         - { org: 'powerline', name: 'fonts' }
-        - { org: 'corybooker', name: 'serverless' }
-        - { org: 'corybooker', name: 'aws-cloudformation' }
-        - { org: 'corybooker', name: 'civis' }
-        - { org: 'corybooker', name: 'cloudflare-workers-js' }
-        - { org: 'wpcomvip', name: 'cory-booker' }
-        - { org: 'corybooker', name: 'docker-wordpress-vip-go' }
-        - { org: 'corybooker', name: 'dbt-projects' }
 
     - name: Install homebrew items
       homebrew:
@@ -220,7 +213,6 @@
       command: ./install.py --clang-completer
       args:
         chdir: "{{ home }}/.vim/bundle/YouCompleteMe"
-      when: plugins|success
       tags:
         - vim
 
