@@ -57,6 +57,8 @@
         - '.bashrc'
         - '.vim'
         - '.vimrc'
+        - '.npmrc'
+        - '.gitignore'
         - '.gitconfig'
         - '.tmux.conf'
         - '.gitmodules'
