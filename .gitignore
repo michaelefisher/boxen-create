@@ -9,3 +9,5 @@ ansible_password
   ControlPath ~/.ssh/sockets/%r@%h:%p
 
 *DS_Store*
+# ignore ansible logs
+logs/*
