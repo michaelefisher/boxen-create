@@ -101,7 +101,6 @@
         - { src: '.aliases.j2', dest: "{{ home }}/.aliases", owner: "{{ user }}", mode: "0644" }
         - { src: '.gitconfig.j2', dest: "{{ home }}/.gitconfig", owner: "{{ user }}", mode: "0644" }
         - { src: '.gitignore.j2', dest: "{{ home }}/.gitignore", owner: "{{ user }}", mode: "0644" }
-        - { src: '.npmrc.j2', dest: "{{ home }}/.npmrc", owner: "{{ user }}", mode: "0644" }
         - { src: '.tmux.conf.j2', dest: "{{ home }}/.tmux.conf", owner: "{{ user }}", mode: "0644" }
         - { src: '.vimrc.j2', dest: "{{ home }}/.vimrc", owner: "{{ user }}", mode: "0644" }
         - { src: '.zshrc.j2', dest: "{{ home }}/.zshrc", owner: "{{ user }}", mode: "0644" }
