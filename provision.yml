@@ -147,6 +147,8 @@
       with_items:
         - { name: omnifocus }
         - { name: signal }
+        - { name: slack }
+        - { name: google-chrome }
       tags:
         - brew
       when: ansible_os_family == 'Darwin'
