@@ -139,7 +139,7 @@
         upgrade_all: yes
       when: ansible_os_family == 'Darwin'
       tags:
-        - brew
+        - homebrew
 
     - name: Install homebrew cask items
       homebrew_cask:
@@ -149,8 +149,9 @@
         - { name: signal }
         - { name: slack }
         - { name: google-chrome }
+        - { name: keybase }
       tags:
-        - brew
+        - homebrew_cask
       when: ansible_os_family == 'Darwin'
 
     - name: Install Mac App Store updates
