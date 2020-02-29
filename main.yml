@@ -9,6 +9,7 @@
    - python_site: "{{ home}}/.local/bin/"
    - civis_redshift_user: "michaelfisher"
 
+
   tasks:
     - name: Make some dirs
       file:
@@ -25,10 +26,6 @@
       become_method: sudo
       tags:
         - files
-
-    - name: Install homebrew
-      shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-      when: ansible_os_family == "Darwin"
 
     - name: Read encrypted ssh config
       include_vars: ssh_config.yml
@@ -122,6 +119,16 @@
       tags:
         - files
 
+    - import_tasks: tasks/brew.yml
+      when: ansible_os_family == 'Darwin'
+      tags:
+        - brew
+
+    - import_tasks: tasks/mas.yml
+      when: ansible_os_family == 'Darwin'
+      tags:
+        - mas
+
     - name: Clone some repos
       git:
         repo: "ssh://git@github.com/{{ item.org }}/{{ item.name }}.git"
@@ -131,60 +138,6 @@
         force: yes
       with_items:
         - { org: 'powerline', name: 'fonts' }
-
-    - name: Install homebrew items
-      homebrew:
-        name: ['awscli', 'adns','augeas','autoconf','automake','reattach-to-user-namespace','pgcli','postgresql','certbot','composer','coreutils','cscope','cmake','dialog','doctl','freetype','gdbm','gettext','ghostscript','giflib','gmp','gnupg','gnutls','icu4c','imagemagick','isl','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','macvim','mpfr','nettle','nmap','node','npth','nvm','mas','openjpeg','pcre','pinentry','qt','rbenv','readline','rclone','redis','s3cmd','the_silver_searcher','tmux','xz','yarn','watch']
-        update_homebrew: yes
-        upgrade_all: yes
-      when: ansible_os_family == 'Darwin'
-      tags:
-        - homebrew
-
-    - name: Install homebrew cask items
-      homebrew_cask:
-        name: "{{ item.name }}"
-      with_items:
-        - { name: omnifocus }
-        - { name: signal }
-        - { name: slack }
-        - { name: google-chrome }
-        - { name: keybase }
-      tags:
-        - homebrew_cask
-      when: ansible_os_family == 'Darwin'
-
-    - name: Install Mac App Store updates
-      command: mas upgrade
-      when:
-        ansible_os_family == 'Darwin'
-      register: mas
-      become: true
-      become_method: sudo
-      tags:
-        - appstore
-
-    - name: Install Mac App Store updates
-      command: "mas install {{ item.id }}"
-      with_items:
-        - { name: utc-bar, id: 525372278 }
-        - { name: reeder-3, id: 880001334 }
-        - { name: mactracker, id: 430255202 }
-        - { name: deliveries, id: 525372278 }
-        - { name: twitterific, id: 1289378661 }
-      when:
-        ansible_os_family == 'Darwin'
-      register: mas
-      become: true
-      become_method: sudo
-      tags:
-        - appstore
-
-    - name: Print mas updates
-      debug:
-        var: mas
-      tags:
-        - appstore
 
     - name: Install Vundle
       git:
@@ -320,12 +273,6 @@
         path: "{{ home }}/.cache/pipenv"
         state: absent
       when: ansible_os_family == 'Debian'
-
-    - name: Delete homebrew caches
-      command: "{{ item.command }}"
-      with_items:
-        - { command: "brew cleanup -s" }
-      when: ansible_os_family == 'Darwin'
 
     - name: add {{extra_path}} to path
       lineinfile:

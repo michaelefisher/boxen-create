@@ -1,0 +1,25 @@
+---
+- name: Install homebrew
+  shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+- name: Install homebrew cask items
+  homebrew_cask:
+    name: "{{ item.name }}"
+  with_items:
+    - { name: omnifocus }
+    - { name: signal }
+    - { name: slack }
+    - { name: google-chrome }
+    - { name: keybase }
+
+- name: Install homebrew items
+  homebrew:
+    name: ['awscli', 'adns','augeas','autoconf','automake','reattach-to-user-namespace','pgcli','postgresql','certbot','composer','coreutils','cscope','cmake','dialog','doctl','freetype','gdbm','gettext','ghostscript','giflib','gmp','gnupg','gnutls','icu4c','imagemagick','isl','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','macvim','mpfr','nettle','nmap','node','npth','nvm','mas','openjpeg','pcre','pinentry','qt','rbenv','readline','rclone','redis','s3cmd','the_silver_searcher','tmux','xz','yarn','watch']
+    update_homebrew: yes
+    upgrade_all: yes
+
+- name: Delete homebrew caches
+  command: "{{ item.command }}"
+  with_items:
+    - { command: "brew cleanup -s" }
+

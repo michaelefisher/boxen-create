@@ -1,0 +1,27 @@
+---
+- name: Install Mac App Store updates
+  command: mas upgrade
+  when:
+    ansible_os_family == 'Darwin'
+  register: mas
+  become: true
+  become_method: sudo
+
+- name: Install Mac App Store updates
+  command: "mas install {{ item.id }}"
+  with_items:
+    - { name: utc-bar, id: 525372278 }
+    - { name: reeder-3, id: 880001334 }
+    - { name: mactracker, id: 430255202 }
+    - { name: deliveries, id: 525372278 }
+    - { name: twitterific, id: 1289378661 }
+    - { name: pages, id: 409201541 }
+  when:
+    ansible_os_family == 'Darwin'
+  register: mas
+  become: true
+  become_method: sudo
+
+- name: Print mas updates
+  debug:
+    var: mas
