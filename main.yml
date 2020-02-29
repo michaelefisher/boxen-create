@@ -10,12 +10,12 @@
    - civis_redshift_user: "michaelfisher"
 
   tasks:
-    - import_tasks: tasks/brew.yml
+    - import_tasks: brew.yml
       when: ansible_os_family == 'Darwin'
       tags:
         - brew
 
-    - import_tasks: tasks/mas.yml
+    - import_tasks: mas.yml
       when: ansible_os_family == 'Darwin'
       tags:
         - mas
@@ -23,6 +23,14 @@
     - import_tasks: files.yml
       tags:
         - files
+
+    - import_tasks: ruby.yml
+      tags:
+        - ruby
+
+    - import_tasks: python.yml
+      tags:
+        - python
 
     - name: Install other things in Linux
       apt:
@@ -51,68 +59,6 @@
     - name: Upgrade Linux packages
       apt:
         upgrade: dist
-      become: true
-      become_method: sudo
-      when: ansible_os_family == 'Debian'
-
-    - name: Clone rbenv repository
-      git: repo=ssh://git@github.com/rbenv/rbenv.git
-           dest={{ home }}/.rbenv
-           update=no
-           force=yes
-      tags:
-        - ruby
-
-    - name: Set correct owner and group
-      file: path=~{{ user }}/.rbenv
-            owner={{ user }}
-            recurse=yes
-      tags:
-        - ruby
-
-    - name: Clone ruby-build
-      git: repo=https://github.com/rbenv/ruby-build.git
-           dest=~{{ user }}/.rbenv/plugins/ruby-build
-           update=no
-      tags:
-        - ruby
-
-    - name: Set correct owner and group
-      file: path={{ home }}/.rbenv/plugins/ruby-build
-            owner={{ user }}
-            recurse=yes
-      tags:
-        - ruby
-
-    - name: Pip install items
-      pip:
-        name:
-          - pgcli
-      become: true
-      become_method: sudo
-      when: ansible_os_family == 'Debian'
-      tags:
-        - files
-
-    - name: Delete pipenv caches
-      file:
-        path: "{{ home }}/Library/Caches/pipenv"
-        state: absent
-      when: ansible_os_family == 'Darwin'
-
-    - name: Delete pipenv caches
-      file:
-        path: "{{ home }}/.cache/pipenv"
-        state: absent
-      when: ansible_os_family == 'Debian'
-
-    - name: add {{extra_path}} to path
-      lineinfile:
-        dest: "/etc/environment"
-        state: present
-        backrefs: yes
-        regexp: 'PATH=(["]*)((?!.*?{{python_site}}).*?)(["]*)$'
-        line: 'PATH=\1\2:{{python_site}}\3'
       become: true
       become_method: sudo
       when: ansible_os_family == 'Debian'

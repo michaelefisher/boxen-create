@@ -1,0 +1,21 @@
+---
+- name: Clone rbenv repository
+  git: repo=ssh://git@github.com/rbenv/rbenv.git
+       dest={{ home }}/.rbenv
+       update=no
+       force=yes
+
+- name: Set correct owner and group
+  file: path=~{{ user }}/.rbenv
+        owner={{ user }}
+        recurse=yes
+
+- name: Clone ruby-build
+  git: repo=https://github.com/rbenv/ruby-build.git
+       dest=~{{ user }}/.rbenv/plugins/ruby-build
+       update=no
+
+- name: Set correct owner and group
+  file: path={{ home }}/.rbenv/plugins/ruby-build
+        owner={{ user }}
+        recurse=yes
