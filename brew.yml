@@ -13,15 +13,23 @@
     - { name: keybase }
     - { name: google-cloud-sdk }
     - { name: jetbrains-toolbox }
+    - { name: microsoft-edge }
+    - { name: adoptopenjdk8 }
+  tags:
+    - cask
 
 - name: Install homebrew items
   homebrew:
-    name: ['awscli', 'adns','augeas','autoconf','automake','reattach-to-user-namespace','pgcli','postgresql','certbot','composer','coreutils','cscope','cmake','dialog','docker-machine','doctl','freetype','gdbm','gettext','ghostscript','giflib','gmp','gnupg','gnutls','icu4c','imagemagick','isl','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','macvim','mpfr','nettle','nmap','node','npth','nvm','mas','openjpeg','pcre','pinentry','qt','rbenv','readline','rclone','redis','s3cmd','the_silver_searcher','tmux','xz','yarn','watch']
+    name: ['awscli', 'adns','augeas','autoconf','automake','reattach-to-user-namespace','pgcli','postgresql','certbot','composer','coreutils','cscope','cmake','dialog','docker-machine','doctl','freetype','gdbm','gettext','ghostscript','giflib','gmp','golang','gnupg','gnutls','icu4c','imagemagick','isl','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','kubernetes-cli','macvim','mpfr','nettle','nmap','node','npth','nvm','mas','mariadb@10.3','mysql-client','openjpeg','pcre','pinentry','qt','rbenv','readline','rclone','redis','s3cmd','the_silver_searcher','tmux','xz','yarn','watch']
     update_homebrew: yes
     upgrade_all: yes
+  tags:
+    - homebrew
 
 - name: Delete homebrew caches
   command: "{{ item.command }}"
   with_items:
     - { command: "brew cleanup -s" }
+  tags:
+    - homebrew
 
