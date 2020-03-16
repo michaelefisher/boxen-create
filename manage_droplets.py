@@ -26,8 +26,8 @@ def droplet_droplet_api(name):
 
     droplet = digitalocean.Droplet(token=os.getenv('DIGITAL_OCEAN_TOKEN'),
                                    name=name,
-                                   region='nyc2',  # New York 2
-                                   image='ubuntu-18-04-x64',  # Ubuntu 14.04 x64
+                                   region='nyc3',  # New York 3
+                                   image='ubuntu-18-04-x64',  # Ubuntu 18.04 x64
                                    size_slug='4gb',
                                    backups=True,
                                    ssh_keys=keys,

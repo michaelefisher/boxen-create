@@ -10,6 +10,39 @@
    - civis_redshift_user: "michaelfisher"
 
   tasks:
+    - name: Install other things in Linux
+      apt:
+        name:
+          - gnupg2
+          - libpq-dev
+          - zsh
+          - powerline
+          - fonts-powerline
+          - awscli
+          - python-dev
+          - python3.6-dev
+          - python3.7-dev
+          - python3-pip
+          - cmake
+          - bzip2
+          - gcc
+          - libffi-dev
+          - libyaml-dev
+          - make
+          - libssl-dev
+      when: ansible_os_family == 'Debian'
+      become: true
+      become_method: sudo
+      tags:
+        - ruby
+
+    - name: Upgrade Linux packages
+      apt:
+        upgrade: dist
+      become: true
+      become_method: sudo
+      when: ansible_os_family == 'Debian'
+
     - import_tasks: brew.yml
       when: ansible_os_family == 'Darwin'
       tags:
@@ -32,33 +65,3 @@
       tags:
         - python
 
-    - name: Install other things in Linux
-      apt:
-        name:
-          - gnupg2
-          - libpq-dev
-          - zsh
-          - powerline
-          - fonts-powerline
-          - awscli
-          - python3.7-dev
-          - python3-pip
-          - cmake
-          - bzip2
-          - gcc
-          - libffi-dev
-          - libyaml-dev
-          - make
-          - libssl-dev
-      when: ansible_os_family == 'Debian'
-      become: true
-      become_method: sudo
-      tags:
-        - ruby
-
-    - name: Upgrade Linux packages
-      apt:
-        upgrade: dist
-      become: true
-      become_method: sudo
-      when: ansible_os_family == 'Debian'

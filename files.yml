@@ -1,4 +1,22 @@
 ---
+- name: delete things that we don't want
+  file:
+    path: "~/{{ item }}"
+    state: absent
+    force: yes
+  with_items:
+    - '.bashrc'
+    - '.vim/'
+    - '.vimrc'
+    - '.npmrc'
+    - '.gitignore'
+    - '.gitconfig'
+    - '.tmux.conf'
+    - '.gitmodules'
+    - '.gnupg/gpg.conf'
+    - '.zshrc'
+    - '{{ zsh_custom }}'
+
 - name: Make some dirs
   file:
     path: "{{ item }}"
@@ -26,23 +44,6 @@
     owner: "{{ user }}"
     mode: "0644"
 
-- name: delete things that we don't want
-  file:
-    path: "~/{{ item }}"
-    state: absent
-  with_items:
-    - '.bashrc'
-    - '.vim'
-    - '.vimrc'
-    - '.npmrc'
-    - '.gitignore'
-    - '.gitconfig'
-    - '.tmux.conf'
-    - '.gitmodules'
-    - '.gnupg/gpg.conf'
-    - '.zshrc'
-    - '{{ zsh_custom }}'
-
 - name: install oh-my-zsh
   git:
     repo: "ssh://git@github.com/robbyrussell/oh-my-zsh.git"
@@ -61,6 +62,11 @@
     src: "{{ zsh_custom }}/themes/powerlevel10k/powerlevel10k.zsh-theme"
     dest: "{{ zsh_custom }}/themes/powerlevel10k.zsh-theme"
     state: link
+
+- name: Install Tmux plugin manager
+  git:
+    repo: "ssh://git@github.com/tmux-plugins/tpm.git"
+    dest: "{{ home }}/.tmux/plugins/tpm"
 
 - name: Template out home directory files
   template:

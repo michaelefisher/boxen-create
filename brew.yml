@@ -10,11 +10,10 @@
     - { name: signal }
     - { name: slack }
     - { name: google-chrome }
-    - { name: keybase }
     - { name: google-cloud-sdk }
     - { name: jetbrains-toolbox }
-    - { name: microsoft-edge }
-    - { name: adoptopenjdk8 }
+    - { name: adoptopenjdk }
+    - { name: omnidisksweeper }
   tags:
     - cask
 
