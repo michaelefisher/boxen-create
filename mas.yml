@@ -16,6 +16,7 @@
     - { name: deliveries, id: 525372278 }
     - { name: twitterific, id: 1289378661 }
     - { name: pages, id: 409201541 }
+    - { name: vimium, id: 1480933944 }
   when:
     ansible_os_family == 'Darwin'
   register: mas
