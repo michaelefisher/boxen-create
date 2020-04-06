@@ -14,3 +14,6 @@ run -b '~/.tmux/plugins/tpm/tpm'
 {% if ansible_os_family == 'Darwin' %}
 set-option -g default-command "reattach-to-user-namespace -l zsh"
 {% endif %}
+
+set-environment -g 'SSH_AUTH_SOCK' ~/.ssh/ssh_auth_sock
+
