@@ -2,17 +2,27 @@
 - name: Install homebrew
   shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
+- name: Tap some repos
+  homebrew_tap:
+    name: "{{ item.name }}"
+    state: present
+  with_items:
+    - { name: homebrew/cask }
+    - { name: homebrew/cask-drivers }
+
 - name: Install homebrew cask items
   homebrew_cask:
     name: "{{ item.name }}"
+    state: present
+    sudo_password: "{{ ansible_become_pass }}"
   with_items:
     - { name: omnifocus }
     - { name: signal }
     - { name: google-chrome }
-    - { name: jetbrains-toolbox }
     - { name: omnidisksweeper }
+    - { name: garmin-express }
   tags:
-    - cask
+    - homebrew
 
 - name: Install homebrew items
   homebrew:

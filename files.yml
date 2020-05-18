@@ -46,7 +46,7 @@
 
 - name: install oh-my-zsh
   git:
-    repo: "ssh://git@github.com/robbyrussell/oh-my-zsh.git"
+    repo: "ssh://git@github.com/ohmyzsh/ohmyzsh.git"
     dest: "{{ home }}/.oh-my-zsh"
     accept_hostkey: yes
     track_submodules: no
@@ -140,5 +140,3 @@
   command: "./install.sh"
   args:
     chdir: "{{ git_dir }}/fonts"
-  when: ansible_os_family == 'Darwin'
-
