@@ -28,7 +28,7 @@ def droplet_droplet_api(name):
                                    name=name,
                                    region='nyc3',  # New York 3
                                    image='ubuntu-18-04-x64',  # Ubuntu 18.04 x64
-                                   size_slug='4gb',
+                                   size_slug=os.getenv('SIZE_SLUG'),
                                    backups=True,
                                    ssh_keys=keys,
                                    private_networking=True,
