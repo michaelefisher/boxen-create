@@ -14,19 +14,20 @@
   homebrew_cask:
     name: "{{ item.name }}"
     state: present
-    sudo_password: "{{ ansible_become_pass }}"
   with_items:
     - { name: omnifocus }
     - { name: signal }
     - { name: omnidisksweeper }
     - { name: garmin-express }
     - { name: keybase }
+    - { name: google-chrome-beta }
+    - { name: docker }
   tags:
     - homebrew
 
 - name: Install homebrew items
   homebrew:
-    name: ['awscli', 'adns','augeas','autoconf','automake','reattach-to-user-namespace','pgcli','coreutils','cscope','cmake','dialog','docker-machine','doctl','freetype','gdbm','gettext','giflib','gmp','gnupg','gnutls','icu4c','isl','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','kubernetes-cli','macvim','mpfr','nettle','nmap','node','npth','nvm','mas','mysql-client','pcre','pinentry','qt','rbenv','readline','rclone','s3cmd','the_silver_searcher','tmux','xz','yarn','watch']
+    name: ['awscli', 'adns','augeas','autoconf','automake','reattach-to-user-namespace','pgcli','coreutils','cscope','cmake','dialog','docker-machine','doctl','freetype','gdbm','gettext','giflib','gmp','gnupg','gnutls','icu4c','isl','irssi','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','kubernetes-cli','mpfr','nettle','nmap','node','npth','nvm','mas','macvim','mysql-client','pcre','pinentry','qt','rbenv','readline','rclone','s3cmd','the_silver_searcher','tmux','xz','yarn','watch']
     update_homebrew: yes
     upgrade_all: yes
   tags:

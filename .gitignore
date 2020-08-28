@@ -11,3 +11,6 @@ ansible_password
 *DS_Store*
 # ignore ansible logs
 logs/*
+
+# ignore private files
+private/*

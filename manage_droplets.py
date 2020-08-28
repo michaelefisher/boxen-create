@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import os
+import time
 import configparser
 import digitalocean
 
@@ -28,7 +29,8 @@ def droplet_droplet_api(name):
                                    name=name,
                                    region='nyc3',  # New York 3
                                    image='ubuntu-18-04-x64',  # Ubuntu 18.04 x64
-                                   size_slug=os.getenv('SIZE_SLUG'),
+                                   size_slug=os.getenv('SIZE_SLUG',
+                                                       's-1vcpu-1gb'),
                                    backups=True,
                                    ssh_keys=keys,
                                    private_networking=True,
@@ -72,16 +74,33 @@ def shutdown_droplet(list_to_shutdown, delete=False):
         for dictionary in full_list:
             if droplet['name'] == dictionary['name']:
                 print("Shutting down: %s because it doesn\'t exist in current list" % droplet['name'])
-                droplet_manager_api().get_droplet(dictionary['id']).shutdown()
+                droplet_object = droplet_manager_api().get_droplet(dictionary['id'])
+                droplet_object.shutdown()
+                _get_droplet_status(droplet_object)
                 if delete:
-                    droplet_manager_api().get_droplet(dictionary['id']).destroy()
+                    droplet_object.destroy()
+                    _get_droplet_status(droplet_object)
 
 
 def create_droplet(list_to_create):
     for droplet in list_to_create:
         print("Creating: %s because it doesn\'t exist in current list" % droplet['name'])
-        droplet_droplet_api(droplet['name']).create()
+        droplet_object = droplet_droplet_api(droplet['name']).create()
+        time.sleep(5)
+        _get_droplet_status(droplet_object)
 
+def _get_droplet_status(droplet):
+    actions = droplet.get_actions()
+    for action in actions:
+        action.load()
+        while action.status == "in-progress":
+            if action.status == "completed":
+                break
+            if action.status == "errored":
+                print(action.status)
+                break
+            print(action.status)
+            time.sleep(10)
 
 if __name__ == '__main__':
     read_config()
@@ -92,4 +111,8 @@ if __name__ == '__main__':
     elif shutdown:
         shutdown_droplet(shutdown, delete=True)
     else:
+        print('Existing Droplets:')
+        for droplet in get_current_droplets_api():
+            print('Name: %s, id: %s' % (droplet.name,
+                  droplet.id))
         print("Nothing to create!")
