@@ -37,10 +37,20 @@
 - name: Read in databases config
   include_vars: databases.yml
 
+- name: Read encrypted s3cfg
+  include_vars: templates/.s3cfg.enc
+
 - name: Template out ssh config
   copy:
     content: "{{ encrypted_content }}"
     dest: "{{ home }}/.ssh/config"
+    owner: "{{ user }}"
+    mode: "0644"
+
+- name: Template out s3cfg content
+  copy:
+    content: "{{ s3cfg_encrypted_content }}"
+    dest: "{{ home }}/.s3cfg"
     owner: "{{ user }}"
     mode: "0644"
 
