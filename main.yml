@@ -29,13 +29,24 @@
           - libffi-dev
           - libyaml-dev
           - make
+          - nginx
           - libssl-dev
           - silversearcher-ag
       when: ansible_os_family == 'Debian'
       become: true
       become_method: sudo
       tags:
-        - ruby
+        - files,ruby
+
+    - name: Install snaps
+      snap:
+        name: heroku
+        classic: yes
+      when: ansible_os_family == 'Debian'
+      become: true
+      become_method: sudo
+      tags:
+        - files
 
     - name: Upgrade Linux packages
       apt:
@@ -60,4 +71,8 @@
     - import_tasks: python.yml
       tags:
         - python
+
+    - import_tasks: website.yml
+      tags:
+        - website
 
