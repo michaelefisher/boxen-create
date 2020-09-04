@@ -1,20 +1,30 @@
 #! /usr/bin/env python
 
 import os
+import sys
 import time
-import configparser
+import logging
+import yaml
 import digitalocean
 
 DROPLETS = []
-
+DEFAULT_SIZE = 's-1vcpu-1gb'
 
 def read_config():
-    config = configparser.ConfigParser()
-    config.read('hosts')
-    for key in config['do']:
-        key_name = key.split(' ')[0]
-        droplet = {'name': key_name}
-        DROPLETS.append(droplet)
+    with open('hosts') as file:
+        data = yaml.load(file, Loader=yaml.FullLoader)
+
+        droplets = []
+
+        try:
+            for name, attributes in data['all']['children']['digitalocean']['hosts'].items():
+                droplets.append({'name': name, 'size': attributes['size'],
+                                 'tags': [attributes['type']]})
+        except AttributeError as e:
+            logging.warning('Received %s, no hosts available' % e)
+            droplets = []
+
+    return droplets
 
 def droplet_manager_api():
     manager = digitalocean.Manager(token=os.getenv('DIGITAL_OCEAN_TOKEN'))
@@ -22,21 +32,27 @@ def droplet_manager_api():
     return manager
 
 
-def droplet_droplet_api(name):
+def droplet_droplet_api(name, size=DEFAULT_SIZE, tags=[]):
     keys = droplet_manager_api().get_all_sshkeys()
+
+    with open(sys.argv[1], 'r') as f:
+        user_data = f.read()
+    logging.warning('Adding user data...\n %s' % user_data)
 
     droplet = digitalocean.Droplet(token=os.getenv('DIGITAL_OCEAN_TOKEN'),
                                    name=name,
                                    region='nyc3',  # New York 3
                                    image='ubuntu-18-04-x64',  # Ubuntu 18.04 x64
-                                   size_slug=os.getenv('SIZE_SLUG',
-                                                       's-1vcpu-1gb'),
+                                   size_slug=size,
                                    backups=True,
                                    ssh_keys=keys,
                                    private_networking=True,
                                    monitoring=True,
-                                   ipv6=True)
+                                   ipv6=True,
+                                   user_data=user_data,
+                                   tags=tags)
 
+    droplet.create()
     return droplet
 
 
@@ -50,9 +66,12 @@ def droplet_dict(current_droplets_api, full_dict=False):
     droplet_list = []
     for droplet in current_droplets_api:
         if full_dict:
-            droplet = {'name': droplet.name, 'id': droplet.id}
+            droplet = {'name': droplet.name, 'size': droplet.size_slug, 'tags':
+                       droplet.tags,
+                       'id': droplet.id}
         else:
-            droplet = {'name': droplet.name}
+            droplet = {'name': droplet.name, 'size': droplet.size_slug,
+                       'tags': droplet.tags}
         droplet_list.append(droplet)
 
     return droplet_list
@@ -73,46 +92,54 @@ def shutdown_droplet(list_to_shutdown, delete=False):
     for droplet in list_to_shutdown:
         for dictionary in full_list:
             if droplet['name'] == dictionary['name']:
-                print("Shutting down: %s because it doesn\'t exist in current list" % droplet['name'])
-                droplet_object = droplet_manager_api().get_droplet(dictionary['id'])
-                droplet_object.shutdown()
-                _get_droplet_status(droplet_object)
+                logging.warning("Shutting down: %s because it doesn\'t exist in current list" % droplet['name'])
+                drop = droplet_manager_api().get_droplet(dictionary['id'])
+                if drop.status != 'shutdown' and drop.status != 'errored':
+                    #if droplet isn't shutdown, shut it down
+                    res = drop.shutdown()
                 if delete:
-                    droplet_object.destroy()
-                    _get_droplet_status(droplet_object)
+                    #if droplet is shutdown, destroy it
+                    res = drop.destroy()
+                    if res:
+                        logging.warning('Droplet is deleted')
 
 
 def create_droplet(list_to_create):
     for droplet in list_to_create:
-        print("Creating: %s because it doesn\'t exist in current list" % droplet['name'])
-        droplet_object = droplet_droplet_api(droplet['name']).create()
-        time.sleep(5)
-        _get_droplet_status(droplet_object)
+        logging.warning("Creating: %s because it doesn\'t exist in current list" % droplet['name'])
+        drop = droplet_droplet_api(droplet['name'], droplet['size'],
+                                   droplet['tags'])
+        actions = drop.get_actions()
+        for action in actions:
+            while action.status == 'in-progress':
+                action.load()
+                if action.status == 'completed':
+                    logging.warning('Droplet creation %s' % action.status)
+                    break
+                logging.warning('Droplet creation %s' % action.status)
+                time.sleep(5)
 
-def _get_droplet_status(droplet):
-    actions = droplet.get_actions()
-    for action in actions:
-        action.load()
-        while action.status == "in-progress":
-            if action.status == "completed":
-                break
-            if action.status == "errored":
-                print(action.status)
-                break
-            print(action.status)
-            time.sleep(10)
+        new_drop = droplet_manager_api().get_droplet(drop.id)
+        logging.warning('Droplet IP address: %s' % new_drop.ip_address)
 
 if __name__ == '__main__':
-    read_config()
+    DROPLETS = read_config()
     create = should_create_droplet(droplet_dict(get_current_droplets_api()), DROPLETS)
+    print(create)
     shutdown = should_shutdown_droplet(droplet_dict(get_current_droplets_api()), DROPLETS)
     if create:
+        logging.warning('Creating the following resources...%s' % [x for x in
+                                                                     create])
+        input("Press Enter/Return to continue...")
         create_droplet(create)
-    elif shutdown:
+    if shutdown:
+        logging.warning('Deleting the following resources...%s' % [x for x in
+                                                                   shutdown])
+        input("Press Enter/Return to continue...")
         shutdown_droplet(shutdown, delete=True)
     else:
-        print('Existing Droplets:')
+        logging.info('Existing Droplets:')
         for droplet in get_current_droplets_api():
-            print('Name: %s, id: %s' % (droplet.name,
+            logging.info('Name: %s, id: %s' % (droplet.name,
                   droplet.id))
-        print("Nothing to create!")
+        logging.info("Nothing to create!")

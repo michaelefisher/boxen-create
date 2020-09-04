@@ -1,7 +1,23 @@
-[local]
-dr-bunsen-honeydew ansible_connection=local ansible_user=michael ansible_python_interpreter=/usr/local/bin/python3
-[macs]
-dr-bunsen-honeydew ansible_port=3333 ansible_user=michael ansible_python_interpreter=/usr/local/bin/python3
-[do]
-website ansible_port=22 ansible_user=michael ansible_python_interpreter=/usr/bin/python3
-#test ansible_port=22 ansible_user=michael ansible_python_interpreter=/usr/bin/python3
+---
+all:
+  children:
+    local:
+      hosts:
+        dr-bunsen-honeydew:
+          ansible_connection: local
+          ansible_user: michael
+          ansible_python_interpreter: /usr/local/bin/python3
+    digitalocean:
+       hosts:
+         website:
+          ansible_port: 22
+          ansible_user: michael
+          ansible_python_interpreter: /usr/bin/python3
+          size: s-1vcpu-3gb
+          type: webserver
+         boxbox:
+          ansible_port: 22
+          ansible_user: michael
+          ansible_python_interpreter: /usr/bin/python3
+          size: s-4vcpu-8gb
+          type: worker

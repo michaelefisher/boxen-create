@@ -3,7 +3,7 @@
 ## Provisioning
 
 ```
-$ TAGS=[tags] ./provision.sh --limit [list of machines or groups]
+$ TAGS=[tags] ./provision.sh --limit [list of hosts]
 
 ```
 Ansible will ask for your `become` password -- that is, a password for the `ansible_user` that is in the `sudoers` group on the remote machine.
@@ -11,7 +11,7 @@ Ansible will ask for your `become` password -- that is, a password for the `ansi
 ### Example Run
 
 ```
-$ TAGS=appstore ./provision.sh --limit local
+$ TAGS=appstore ./provision.sh --limit dr-bunsen-honeydew
 BECOME password:
 
 PLAY [all] *************************************************************************************************************
@@ -47,3 +47,22 @@ ok: [dr-bunsen-honeydew] => {
 PLAY RECAP *************************************************************************************************************
 dr-bunsen-honeydew         : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
+
+## Adding SSL to webservers
+
+If a droplet has a tag of webserver in `hosts`, then it will need SSL.
+Everything is configured with one exception:
+
+SSH into machine and run the following interactive command:
+```
+$ ssh website
+$ sudo certbot --nginx -d <domain here> -d < another domain here>
+```
+
+Provided each hostname above has an authoritative DNS record pointing to the
+droplet's IP, SSL certificate issuance should proceed.
+
+#TODOs:
+1. Automate issuance of SSL certificates
+2. Better automatically configure HTTP 301 redirects in `nginx` configuration
+3. Automate creation and maintenance of DigitalOcean firewalls

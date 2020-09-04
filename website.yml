@@ -1,0 +1,76 @@
+---
+- name: install certbot
+  snap:
+    name: certbot
+    classic: yes
+  become: true
+  become_method: sudo
+
+- name: install nginx and python pip
+  apt:
+    name:
+      - nginx
+      - python3-pip
+      - python-certbot-nginx
+  become: true
+  become_method: sudo
+
+- name: pip install python-requests
+  pip:
+    name: requests
+  become: true
+  become_method: sudo
+
+- name: create directory for letsencrypt
+  file:
+   path: "/etc/letsencrypt/"
+   state: directory
+   owner: root
+  become: true
+  become_method: sudo
+
+- name: download modified dns auth
+  get_url:
+    url: "https://raw.githubusercontent.com/joohoi/acme-dns-certbot-joohoi/master/acme-dns-auth.py"
+    dest: "/etc/letsencrypt/acme-dns-auth.py"
+    mode: "0700"
+  become: true
+  become_method: sudo
+
+- name: Replace python with python3 in modified dns auth
+  lineinfile:
+    path: "/etc/letsencrypt/acme-dns-auth.py"
+    regexp: "^\\#\\!\/usr\/bin\/env\ python"
+    line: "#!/usr/bin/env python3"
+  become: yes
+  become_method: sudo
+
+- name: delete existing /var/www/html
+  file:
+    path: "/var/www/html"
+    state: absent
+  become: yes
+  become_method: sudo
+
+- name: change permissions on /var/www/
+  file:
+    path: "/var/www/"
+    owner: "{{ user }}"
+  become: yes
+  become_method: sudo
+
+- name: clone website files into place
+  git:
+    repo: "ssh://git@github.com/michaelefisher/website.git"
+    dest: "/var/www/"
+    accept_hostkey: yes
+    track_submodules: no
+    force: yes
+
+- name: change permissions on /var/www/ back
+  file:
+    path: "/var/www/"
+    owner: root
+  become: yes
+  become_method: sudo
+

@@ -47,6 +47,11 @@
     owner: "{{ user }}"
     mode: "0644"
 
+- name: Delete ssh known hosts
+  file:
+    path: "{{ home }}/.ssh/known_hosts"
+    state: absent
+
 - name: Template out s3cfg content
   copy:
     content: "{{ s3cfg_encrypted_content }}"
