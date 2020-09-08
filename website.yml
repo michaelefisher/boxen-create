@@ -74,3 +74,10 @@
   become: yes
   become_method: sudo
 
+- name: add renewal cron
+  cron:
+    name: "Renew certificates every 3 months"
+    special_time: "monthly"
+    job: "certbot renew --pre-hook 'service nginx stop' --post-hook 'service nginx start'"
+  become: yes
+  become_method: sudo
