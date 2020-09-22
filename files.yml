@@ -109,6 +109,15 @@
     owner: "{{ user }}"
     mode: "0644"
 
+- name: Copy rmvim file into place
+  get_url:
+    url: "https://raw.githubusercontent.com/wannesm/rmvim.vim/master/util/rmvim"
+    dest: "/usr/local/bin"
+    mode: "0555"
+  become: true
+  become_method: sudo
+  when: ansible_os_family == 'Debian'
+
 - name: Clone some repos
   git:
     repo: "ssh://git@github.com/{{ item.org }}/{{ item.name }}.git"
@@ -134,7 +143,7 @@
   become: true
   become_method: sudo
 
-- name: Bundle some vundle
+- name: Bundle some vundle (and other things)
   command: "vim +PluginInstall +qall"
   args:
     chdir: "{{ home }}"
