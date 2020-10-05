@@ -15,9 +15,9 @@ all:
           ansible_python_interpreter: /usr/bin/python3
           size: s-1vcpu-3gb
           type: webserver
-         boxbox:
-          ansible_port: 22
-          ansible_user: michael
-          ansible_python_interpreter: /usr/bin/python3
-          size: s-4vcpu-8gb
-          type: worker
+#         boxbox:
+#          ansible_port: 22
+#          ansible_user: michael
+#          ansible_python_interpreter: /usr/bin/python3
+#          size: s-4vcpu-8gb
+#          type: worker
