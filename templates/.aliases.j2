@@ -29,9 +29,15 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+# docker-compose
 alias dk="docker-compose kill"
 alias du="docker-compose up -d"
 alias db="docker-compose build $1"
 alias dl="docker-compose logs -f $1"
 alias dc="docker-compose exec $1 $2 $3"
 alias drm="docker-compose rm -f"
+alias dd="docker-compose kill; docker-compose rm -f"
+
+# finding things
+# find {pwd} -name $1
+alias fh = find . -name $1
