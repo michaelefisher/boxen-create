@@ -16,13 +16,11 @@
     name: "{{ item.name }}"
     state: present
   with_items:
-    - { name: omnifocus }
     - { name: signal }
     - { name: omnidisksweeper }
-    - { name: garmin-express }
     - { name: keybase }
-    - { name: google-chrome-beta }
-    - { name: docker }
+#    - { name: docker } Use https://hub.docker.com/editions/community/docker-ce-desktop-mac/
+    - { name: notion }
   tags:
     - homebrew
 
