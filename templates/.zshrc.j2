@@ -51,16 +51,6 @@ fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
-export PATH="/usr/local/sbin:/usr/local/opt/mysql-client/bin:$PATH"
-
-#docker-compose up wp
-function wp-up() {
-  if [[ -d ${GIT}/docker-wordpress-vip-go ]]; then
-    current_dir=$PWD
-    cd $GIT/docker-wordpress-vip-go && docker-compose up -d && cd $current_dir
-  fi
-}
-
 # tabtab source for packages
 # uninstall by removing these lines
 [ -f ~/.config/tabtab/__tabtab.bash ] && . ~/.config/tabtab/__tabtab.bash || true
@@ -72,10 +62,17 @@ function ssh-downloads() {
 	fi
 }
 
-function setup() {
-	cwd=$PWD
-	$(cd ${GIT}/aws-cloudformation && `make setup 2>&1 /dev/null` && cd $cwd)
-}
-
 # gam
 gam() { "/Users/michael/bin/gam/gam" "$@" ; }
+
+tags() {
+	if [[ -z $1 || -z $2 ]]; then;
+		echo "Need to set variables..."
+		echo "TAGS=\$1 bash -c "$HOME/boxen-create/provision.sh" --limit \$2"
+	else
+		pushd "$HOME/boxen-create"
+		echo "TAGS=${1} . "$HOME/boxen-create/provision.sh" --limit ${2}"
+		TAGS=$1 . "$HOME/boxen-create/provision.sh" --limit $2
+		popd
+	fi
+}
