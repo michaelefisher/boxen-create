@@ -148,10 +148,10 @@
   args:
     chdir: "{{ home }}"
 
-- name: Compile YouCompleteMe
-  command: ./install.py --clang-completer
-  args:
-    chdir: "{{ home }}/.vim/bundle/YouCompleteMe"
+      #- name: Compile YouCompleteMe
+      #  command: ./install.py --clang-completer
+      #  args:
+      #    chdir: "{{ home }}/.vim/bundle/YouCompleteMe"
 
 - name: Write out POSIX-compatible .profile
   blockinfile:
