@@ -1,5 +1,7 @@
+#! /usr/bin/env ansible-playbook
+
 ---
-- hosts: all
+- hosts: localhost
   gather_facts: yes
   vars:
    - user: "{{ ansible_env.LOGNAME }}"
@@ -8,6 +10,8 @@
    - git_dir: "{{ home }}/git"
    - python_site: "{{ home}}/.local/bin/"
    - civis_redshift_user: "michaelfisher"
+  environment:
+   - PATH: "{{ ansible_env.PATH }}"
 
   tasks:
     - name: Install other things in Linux

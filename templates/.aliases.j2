@@ -41,3 +41,10 @@ alias dd="docker-compose kill; docker-compose rm -f"
 # finding things
 # find {pwd} -name $1
 alias fh="find . -name $1"
+
+# chrome with corb disabled
+alias chrome="open /Applications/Google\ Chrome.app --args --disable-features=BypassCorbOnlyForExtensionsAllowlist --enable-features=NetworkService"
+
+# streak deploy stuff
+# Usage: deploy update
+alias deploy="./builders/clientjs/deploy.js $1"

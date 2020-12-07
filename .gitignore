@@ -14,3 +14,4 @@ logs/*
 
 # ignore private files
 private/*
+secrets/*

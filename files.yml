@@ -1,166 +1,186 @@
+#! /usr/bin/env ansible-playbook
+
 ---
-- name: delete things that we don't want
-  file:
-    path: "~/{{ item }}"
-    state: absent
-    force: yes
-  with_items:
-    - '.bashrc'
-    - '.vim/'
-    - '.vimrc'
-    - '.npmrc'
-    - '.gitignore'
-    - '.gitconfig'
-    - '.tmux.conf'
-    - '.gitmodules'
-    - '.gnupg/gpg.conf'
-    - '.zshrc'
-    - '{{ zsh_custom }}'
+- hosts: localhost
+  gather_facts: yes
+  vars:
+   - user: "{{ ansible_env.LOGNAME }}"
+   - home: "{{ ansible_env.HOME }}"
+   - zsh_custom: "{{ home }}/.oh-my-zsh/custom"
+   - git_dir: "{{ home }}/git"
+   - python_site: "{{ home}}/.local/bin/"
+   - civis_redshift_user: "michaelfisher"
+  environment:
+   - PATH: "{{ ansible_env.PATH }}"
 
-- name: Make some dirs
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ user }}"
-  with_items:
-    - "{{ git_dir }}"
-    - "{{ home }}/.vim"
-    - "{{ home }}/.gnupg"
-    - "/opt/{{ user }}"
-    - "{{ home }}/.config/pgcli"
-  become: true
-  become_method: sudo
+  tasks:
+    - name: delete things that we don't want
+      file:
+        path: "~/{{ item }}"
+        state: absent
+        force: yes
+      with_items:
+        - '.bashrc'
+        - '.vim/'
+        - '.vimrc'
+        - '.npmrc'
+        - '.gitignore'
+        - '.gitconfig'
+        - '.tmux.conf'
+        - '.gitmodules'
+        - '.gnupg/gpg.conf'
+        - '.zshrc'
+        - '{{ zsh_custom }}'
 
-- name: Read encrypted ssh config
-  include_vars: templates/.ssh/config.yml.j2.enc
+    - name: Make some dirs
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ user }}"
+      with_items:
+        - "{{ git_dir }}"
+        - "{{ home }}/.vim"
+        - "{{ home }}/.gnupg"
+        - "/opt/{{ user }}"
+        - "{{ home }}/.config/pgcli"
+      become: true
+      become_method: sudo
 
-- name: Read in databases config
-  include_vars: databases.yml
+    - name: Read encrypted ssh config
+      include_vars: templates/.ssh/config.yml.j2.enc
 
-- name: Read encrypted s3cfg
-  include_vars: templates/.s3cfg.enc
+    - name: Read in databases config
+      include_vars: databases.yml
 
-- name: Template out ssh config
-  copy:
-    content: "{{ encrypted_content }}"
-    dest: "{{ home }}/.ssh/config"
-    owner: "{{ user }}"
-    mode: "0644"
+    - name: Read encrypted s3cfg
+      include_vars: templates/.s3cfg.enc
 
-- name: Delete ssh known hosts
-  file:
-    path: "{{ home }}/.ssh/known_hosts"
-    state: absent
+    - name: Template out ssh config
+      copy:
+        content: "{{ encrypted_content }}"
+        dest: "{{ home }}/.ssh/config"
+        owner: "{{ user }}"
+        mode: "0644"
 
-- name: Template out s3cfg content
-  copy:
-    content: "{{ s3cfg_encrypted_content }}"
-    dest: "{{ home }}/.s3cfg"
-    owner: "{{ user }}"
-    mode: "0644"
+    - name: Delete ssh known hosts
+      file:
+        path: "{{ home }}/.ssh/known_hosts"
+        state: absent
 
-- name: install oh-my-zsh
-  git:
-    repo: "ssh://git@github.com/ohmyzsh/ohmyzsh.git"
-    dest: "{{ home }}/.oh-my-zsh"
-    accept_hostkey: yes
-    track_submodules: no
-    force: yes
+    - name: Template out s3cfg content
+      copy:
+        content: "{{ s3cfg_encrypted_content }}"
+        dest: "{{ home }}/.s3cfg"
+        owner: "{{ user }}"
+        mode: "0644"
 
-- name: Install powerlevel10k zsh theme
-  git:
-    repo: "ssh://git@github.com/romkatv/powerlevel10k.git"
-    dest: "{{ zsh_custom }}/themes/powerlevel10k"
+    - name: install oh-my-zsh
+      git:
+        repo: "ssh://git@github.com/ohmyzsh/ohmyzsh.git"
+        dest: "{{ home }}/.oh-my-zsh"
+        accept_hostkey: yes
+        track_submodules: no
+        force: yes
 
-- name: Symlink powerlevel10k into place
-  file:
-    src: "{{ zsh_custom }}/themes/powerlevel10k/powerlevel10k.zsh-theme"
-    dest: "{{ zsh_custom }}/themes/powerlevel10k.zsh-theme"
-    state: link
+    - name: Install powerlevel10k zsh theme
+      git:
+        repo: "ssh://git@github.com/romkatv/powerlevel10k.git"
+        dest: "{{ zsh_custom }}/themes/powerlevel10k"
 
-- name: Install Tmux plugin manager
-  git:
-    repo: "ssh://git@github.com/tmux-plugins/tpm.git"
-    dest: "{{ home }}/.tmux/plugins/tpm"
+    - name: Symlink powerlevel10k into place
+      file:
+        src: "{{ zsh_custom }}/themes/powerlevel10k/powerlevel10k.zsh-theme"
+        dest: "{{ zsh_custom }}/themes/powerlevel10k.zsh-theme"
+        state: link
 
-- name: Template out home directory files
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ item.owner }}"
-    mode: "{{ item.mode }}"
-  with_items:
-    - { src: '.aliases.j2', dest: "{{ home }}/.aliases", owner: "{{ user }}", mode: "0644" }
-    - { src: '.gitconfig.j2', dest: "{{ home }}/.gitconfig", owner: "{{ user }}", mode: "0644" }
-    - { src: '.gitignore.j2', dest: "{{ home }}/.gitignore", owner: "{{ user }}", mode: "0644" }
-    - { src: '.tmux.conf.j2', dest: "{{ home }}/.tmux.conf", owner: "{{ user }}", mode: "0644" }
-    - { src: '.vimrc.j2', dest: "{{ home }}/.vimrc", owner: "{{ user }}", mode: "0644" }
-    - { src: '.zshrc.j2', dest: "{{ home }}/.zshrc", owner: "{{ user }}", mode: "0644" }
-    - { src: '.inputrc.j2', dest: "{{ home }}/.inputrc", owner: "{{ user }}", mode: "0644" }
-    - { src: 'gpg.conf.j2', dest: "{{ home }}/.gnupg/gpg.conf", owner: "{{ user }}", mode: "0644" }
-    - { src: 'install_nvm.sh.j2', dest: "/opt/{{ user }}/install_nvm.sh", owner: "{{ user }}", mode: "0700" }
-    - { src: '.config/pgcli/config', dest: "{{ home }}/.config/pgcli/config", owner: "{{ user }}", mode: "0644" }
-    - { src: '.ssh/rc.j2', dest: "{{ home }}/.ssh/rc", owner: "{{ user }}", mode: "0644" }
+    - name: Install Tmux plugin manager
+      git:
+        repo: "ssh://git@github.com/tmux-plugins/tpm.git"
+        dest: "{{ home }}/.tmux/plugins/tpm"
 
-- name: Copy into place .p10k file
-  copy:
-    src: "templates/.p10k.zsh.j2"
-    dest: "{{ home }}/.p10k.zsh"
-    owner: "{{ user }}"
-    mode: "0644"
+    - name: Template out home directory files
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ item.owner }}"
+        mode: "{{ item.mode }}"
+      with_items:
+        - { src: '.aliases.j2', dest: "{{ home }}/.aliases", owner: "{{ user }}", mode: "0644" }
+        - { src: '.gitconfig.j2', dest: "{{ home }}/.gitconfig", owner: "{{ user }}", mode: "0644" }
+        - { src: '.gitignore.j2', dest: "{{ home }}/.gitignore", owner: "{{ user }}", mode: "0644" }
+        - { src: '.tmux.conf.j2', dest: "{{ home }}/.tmux.conf", owner: "{{ user }}", mode: "0644" }
+        - { src: '.vimrc.j2', dest: "{{ home }}/.vimrc", owner: "{{ user }}", mode: "0644" }
+        - { src: '.zshrc.j2', dest: "{{ home }}/.zshrc", owner: "{{ user }}", mode: "0644" }
+        - { src: '.inputrc.j2', dest: "{{ home }}/.inputrc", owner: "{{ user }}", mode: "0644" }
+        - { src: 'gpg.conf.j2', dest: "{{ home }}/.gnupg/gpg.conf", owner: "{{ user }}", mode: "0644" }
+        - { src: 'install_nvm.sh.j2', dest: "/opt/{{ user }}/install_nvm.sh", owner: "{{ user }}", mode: "0700" }
+        - { src: '.config/pgcli/config', dest: "{{ home }}/.config/pgcli/config", owner: "{{ user }}", mode: "0644" }
+        - { src: '.ssh/rc.j2', dest: "{{ home }}/.ssh/rc", owner: "{{ user }}", mode: "0644" }
 
-- name: Copy rmvim file into place
-  get_url:
-    url: "https://raw.githubusercontent.com/wannesm/rmvim.vim/master/util/rmvim"
-    dest: "/usr/local/bin"
-    mode: "0555"
-  become: true
-  become_method: sudo
-  when: ansible_os_family == 'Debian'
+    - name: Copy into place .p10k file
+      copy:
+        src: "templates/.p10k.zsh.j2"
+        dest: "{{ home }}/.p10k.zsh"
+        owner: "{{ user }}"
+        mode: "0644"
 
-- name: Clone some repos
-  git:
-    repo: "ssh://git@github.com/{{ item.org }}/{{ item.name }}.git"
-    dest: "{{ git_dir }}/{{ item.name }}"
-    accept_hostkey: yes
-    track_submodules: no
-    force: yes
-  with_items:
-    - { org: 'powerline', name: 'fonts' }
+    - name: Copy rmvim file into place
+      get_url:
+        url: "https://raw.githubusercontent.com/wannesm/rmvim.vim/master/util/rmvim"
+        dest: "/usr/local/bin"
+        mode: "0555"
+      become: true
+      become_method: sudo
+      when: ansible_os_family == 'Debian'
 
-- name: Install Vundle
-  git:
-    repo: "ssh://git@github.com/VundleVim/Vundle.vim.git"
-    dest: "{{ home }}/.vim/bundle/Vundle.vim"
-    accept_hostkey: yes
-    force: yes
+    - name: Clone some repos
+      git:
+        repo: "ssh://git@github.com/{{ item.org }}/{{ item.name }}.git"
+        dest: "{{ git_dir }}/{{ item.name }}"
+        accept_hostkey: yes
+        track_submodules: no
+        force: yes
+      with_items:
+        - { org: 'powerline', name: 'fonts' }
 
-- name: Install nvm
-  command: "./install_nvm.sh"
-  args:
-    chdir: "/opt/{{ user }}"
-    creates: "{{ home }}/.nvm"
-  become: true
-  become_method: sudo
+    - name: Install Vundle
+      git:
+        repo: "ssh://git@github.com/VundleVim/Vundle.vim.git"
+        dest: "{{ home }}/.vim/bundle/Vundle.vim"
+        accept_hostkey: yes
+        force: yes
 
-- name: Bundle some vundle (and other things)
-  command: "vim +PluginInstall +qall"
-  args:
-    chdir: "{{ home }}"
+    - name: Install nvm
+      command: "./install_nvm.sh"
+      args:
+        chdir: "/opt/{{ user }}"
+        creates: "{{ home }}/.nvm"
+      become: true
+      become_method: sudo
 
-      #- name: Compile YouCompleteMe
-      #  command: ./install.py --clang-completer
-      #  args:
-      #    chdir: "{{ home }}/.vim/bundle/YouCompleteMe"
+    - name: Bundle some vundle (and other things)
+      command: "vim +PluginInstall +qall"
+      args:
+        chdir: "{{ home }}"
 
-- name: Write out POSIX-compatible .profile
-  blockinfile:
-    dest: "~/.profile"
-    insertafter: EOF
-    create: yes
-    content: "source ~/.zshrc"
+    - name: Compile YouCompleteMe
+      command:
+        argv:
+          - ./install.py
+          - --clang-completer
+          - --ts-completer
+          - --js-completer
+          - --java-completer
+        chdir: "{{ home }}/.vim/bundle/YouCompleteMe"
 
-- name: Install powerline shell fonts
-  command: "./install.sh"
-  args:
-    chdir: "{{ git_dir }}/fonts"
+    - name: Write out POSIX-compatible .profile
+      blockinfile:
+        dest: "~/.profile"
+        insertafter: EOF
+        create: yes
+        content: "source ~/.zshrc"
+
+    - name: Install powerline shell fonts
+      command: "./install.sh"
+      args:
+        chdir: "{{ git_dir }}/fonts"

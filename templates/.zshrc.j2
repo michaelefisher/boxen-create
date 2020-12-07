@@ -37,8 +37,8 @@ if [[ -e ${HOME}/.rbenv ]]; then
   eval "$(rbenv init -)"
 fi
 
-# add mysql
-export PATH=/usr/local/opt/mysql-client/bin:/usr/local/opt/mysql@5.7/bin:$PATH
+# add mysql and vs code
+export PATH=$PATH:/usr/local/opt/mysql-client/bin:/usr/local/opt/mysql@5.7/bin
 
 # more annoying google stuffs
 export CLOUDSDK_PYTHON="$(brew --prefix)/opt/python@3.8/libexec/bin/python"
