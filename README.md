@@ -3,15 +3,19 @@
 ## Provisioning
 
 ```
-$ TAGS=[tags] ./provision.sh --limit [list of hosts]
+$ pipenv run ./main.yml -i hosts.yml -l [list of hosts]
+```
+- or -
 
+```
+$ TAGS=[tags] ./provision.sh --limit [list of hosts]
 ```
 Ansible will ask for your `become` password -- that is, a password for the `ansible_user` that is in the `sudoers` group on the remote machine.
 
 ### Example Run
 
 ```
-$ TAGS=appstore ./provision.sh --limit dr-bunsen-honeydew
+$ pipenv run ./main.yml -i hosts.yml -l [list of hosts]
 BECOME password:
 
 PLAY [all] *************************************************************************************************************

@@ -1,7 +1,7 @@
 #! /usr/bin/env ansible-playbook
 
 ---
-- hosts: localhost
+- hosts: all
   gather_facts: yes
   vars:
    - user: "{{ ansible_env.LOGNAME }}"
@@ -19,20 +19,12 @@
         name:
           - gnupg2
           - libpq-dev
-          - zsh
           - powerline
           - fonts-powerline
           - awscli
-          - python-dev
-          - python3.7-dev
-          - python3-pip
-          - cmake
           - bzip2
-          - gcc
           - libffi-dev
           - libyaml-dev
-          - make
-          - libssl-dev
           - silversearcher-ag
       when: ansible_os_family == 'Debian'
       become: true
@@ -42,7 +34,7 @@
 
     - name: Install snaps
       snap:
-        name: heroku
+        name: node
         classic: yes
       when: ansible_os_family == 'Debian'
       become: true
@@ -77,5 +69,5 @@
     - import_tasks: website.yml
       tags:
         - website
-      when: ansible_os_family != 'Darwin'
+      when: ansible_os_family != 'Darwin' and inventory_hostname == 'website'
 

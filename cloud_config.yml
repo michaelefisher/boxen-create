@@ -6,3 +6,5 @@ users:
     sudo: ['ALL=(ALL) NOPASSWD:ALL']
     ssh-authorized-keys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2owcpGR5YNKZh8iNfdyg6M/Tgmmmfr+lTbJG8ZjRHppLs1sCl/Uc+s9sfLMYzuvGz20oxICs/CtdViaYdw+mYNNa86XYJ6enbDythkCGeMYUKZZiis9XJ/E9+y/DtvVvdUaHeUyAqyGNgfN/4LXPEOUGRQiAraKt6a4wu8Rod4pUO8GgHPvXA34kqlzK6MutiRrtVimasGaMNYiKrptf3yrsWtw8DLmXsNocqZGXrYk4lHB+AMRjHbh25X17wHjKzvzZUSp+beM8Vj5rzxkzxDgcuXUoGCI3H3VlXRZ4JD9Ey/66a1WFAOltckszrMmoQPfBSMUJFUUXmpvufViM5
+runcmd:
+  - apt-get install -y curl wget zsh gcc cmake python3.8-dev python3-pip libssl-dev make

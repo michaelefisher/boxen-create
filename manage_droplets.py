@@ -42,13 +42,13 @@ def droplet_droplet_api(name, size=DEFAULT_SIZE, tags=[]):
     droplet = digitalocean.Droplet(token=os.getenv('DIGITAL_OCEAN_TOKEN'),
                                    name=name,
                                    region='nyc3',  # New York 3
-                                   image='ubuntu-18-04-x64',  # Ubuntu 18.04 x64
+                                   image='ubuntu-20-04-x64',  # Ubuntu 20.04 x64
                                    size_slug=size,
-                                   backups=True,
+                                   backups=False,
                                    ssh_keys=keys,
                                    private_networking=True,
                                    monitoring=True,
-                                   ipv6=True,
+                                   ipv6=False,
                                    user_data=user_data,
                                    tags=tags)
 

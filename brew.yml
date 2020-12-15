@@ -1,6 +1,6 @@
 ---
 - name: Install homebrew
-  shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  shell: "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install"
 
 - name: Tap some repos
   homebrew_tap:
