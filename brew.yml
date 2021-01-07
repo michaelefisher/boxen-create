@@ -1,6 +1,11 @@
 ---
-- name: Install homebrew
-  shell: "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install"
+- name: Install homebrew items
+  homebrew:
+    name: ['awscli', 'adns','augeas','autoconf','automake','reattach-to-user-namespace','pgcli','coreutils','cscope','cmake','dialog','doctl','freetype','gdbm','gettext','giflib', 'git-lfs', 'gmp','gnupg','gnutls','heroku','icu4c','isl','irssi','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','kubernetes-cli','mpfr','nettle','nmap','node','npth','nvm','mas','macvim','mysql-client','pcre','pinentry','qt','rbenv','readline','rclone','s3cmd','telnet','the_silver_searcher','tmux','xz','yarn','watch']
+    update_homebrew: yes
+    upgrade_all: yes
+  tags:
+    - homebrew
 
 - name: Tap some repos
   homebrew_tap:
@@ -14,21 +19,13 @@
 - name: Install homebrew cask items
   homebrew_cask:
     name: "{{ item.name }}"
-    state: present
+    state: upgraded
   with_items:
     - { name: signal }
     - { name: omnidisksweeper }
     - { name: keybase }
 #    - { name: docker } Use https://hub.docker.com/editions/community/docker-ce-desktop-mac/
     - { name: notion }
-  tags:
-    - homebrew
-
-- name: Install homebrew items
-  homebrew:
-    name: ['awscli', 'adns','augeas','autoconf','automake','reattach-to-user-namespace','pgcli','coreutils','cscope','cmake','dialog','doctl','freetype','gdbm','gettext','giflib', 'git-lfs', 'gmp','gnupg','gnutls','heroku','icu4c','isl','irssi','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','kubernetes-cli','mpfr','nettle','nmap','node','npth','nvm','mas','macvim','mysql-client','pcre','pinentry','qt','rbenv','readline','rclone','s3cmd','telnet','the_silver_searcher','tmux','xz','yarn','watch']
-    update_homebrew: yes
-    upgrade_all: yes
   tags:
     - homebrew
 
