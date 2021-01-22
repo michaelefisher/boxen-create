@@ -8,10 +8,11 @@ import yaml
 import digitalocean
 
 DROPLETS = []
+DIGITAL_OCEAN_TOKEN = os.getenv('DIGITAL_OCEAN_TOKEN')
 DEFAULT_SIZE = 's-1vcpu-1gb'
 
 def read_config():
-    with open('hosts') as file:
+    with open('hosts.yml') as file:
         data = yaml.load(file, Loader=yaml.FullLoader)
 
         droplets = []
@@ -26,8 +27,15 @@ def read_config():
 
     return droplets
 
+def read_secrets():
+    digital_ocean_token = input("DIGITAL OCEAN TOKEN: ")
+    if digital_ocean_token and len(digital_ocean_token) > 0:
+        print("First five characters of token entered are %s" % digital_ocean_token[0:5])
+
+    return digital_ocean_token
+
 def droplet_manager_api():
-    manager = digitalocean.Manager(token=os.getenv('DIGITAL_OCEAN_TOKEN'))
+    manager = digitalocean.Manager(token=DIGITAL_OCEAN_TOKEN)
 
     return manager
 
@@ -124,6 +132,7 @@ def create_droplet(list_to_create):
 
 if __name__ == '__main__':
     DROPLETS = read_config()
+    DIGITAL_OCEAN_TOKEN = read_secrets()
     create = should_create_droplet(droplet_dict(get_current_droplets_api()), DROPLETS)
     print(create)
     shutdown = should_shutdown_droplet(droplet_dict(get_current_droplets_api()), DROPLETS)
