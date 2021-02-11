@@ -49,25 +49,23 @@
       become_method: sudo
       when: ansible_os_family == 'Debian'
 
-    - import_tasks: brew.yml
+    - include: tasks/brew.yml
       when: ansible_os_family == 'Darwin'
       tags:
-        - brew
+        - homebrew
 
-    - import_tasks: files.yml
+    - include: tasks/files.yml
       tags:
         - files
 
-    - import_tasks: ruby.yml
+    - include: tasks/ruby.yml
       tags:
         - ruby
 
-    - import_tasks: python.yml
+    - include: tasks/python.yml
       tags:
         - python
 
-    - import_tasks: website.yml
-      tags:
-        - website
-      when: ansible_os_family != 'Darwin' and inventory_hostname == 'website'
+  handlers:
+     - include: handlers/main.yml
 

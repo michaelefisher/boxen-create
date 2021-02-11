@@ -27,10 +27,10 @@
   tags:
     - homebrew
 
-- name: Delete homebrew caches
-  command: "{{ item.command }}"
-  with_items:
-    - { command: "brew cleanup -s" }
+- name: Where is the cache?
+  command: "brew --cache"
+  register: homebrew_cache_path
   tags:
     - homebrew
-
+  notify:
+    - "homebrew_cache_clear"

@@ -27,6 +27,26 @@ function dateu() {
   date --date="@$1"
 }
 
+# streak deploy stuff
+function deploy() {
+  CHDIR=${HOME}/git/MailFooDeploy/
+  echo "Changing to ${CHDIR}"
+  cd $CHDIR
+  echo "git pull"
+  git pull
+  echo "Press any key to contine..."
+  while [ true ]; do
+    read -t 3 -n 1
+	if [ $? = 0 ]; then
+      exit ;
+	else
+	  echo "Waiting for keypress..."
+	fi
+  done
+  echo "./builders/clientjs/deploy.js ${1}"
+  ./builders/clientjs/deploy.js $1
+}
+
 function timestamp() {
   date -j -f "%b %d %T %Z %Y" "${1}" "+%s"
 }
