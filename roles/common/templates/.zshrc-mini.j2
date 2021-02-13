@@ -1,0 +1,16 @@
+export HISTTIMEFORMAT='%d/%m/%y %T '
+
+export EDITOR="vim"
+
+export GIT="$HOME/git"
+
+function dateu() {
+  date --date="@$1"
+}
+
+function timestamp() {
+  date -j -f "%b %d %T %Z %Y" "${1}" "+%s"
+}
+
+# Concatenate ~/.aliases
+
