@@ -104,6 +104,20 @@
       - { src: '.config/pgcli/config', dest: "{{ home }}/.config/pgcli/config", owner: "{{ user }}", mode: "0644" }
       - { src: '.ssh/rc.j2', dest: "{{ home }}/.ssh/rc", owner: "{{ user }}", mode: "0644" }
 
+
+  - name: Copy zshrc-mini into ~/Documents dir
+    copy:
+      src: "templates/.zshrc-mini.j2"
+      dest: "{{ home }}/Documents/.ashrc"
+      owner: "root"
+      mode: "0644"
+
+  - name: Concatenate aliases to ashrc
+    lineinfile:
+      path: "{{ home }}/Documents/.ashrc"
+      regexp: "^{{ lookup('file', '{{ home }}/Documents/.ashrc') }}"
+      line: "{{ lookup('file', '{{ home }}/.aliases') }}{{ lookup('file', '{{ home }}/Documents/.ashrc') }}"
+
   - name: Copy into place .p10k file
     copy:
       src: "templates/.p10k.zsh.j2"
