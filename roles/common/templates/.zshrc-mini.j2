@@ -12,5 +12,4 @@ function timestamp() {
   date -j -f "%b %d %T %Z %Y" "${1}" "+%s"
 }
 
-# Concatenate ~/.aliases
-
+{% include ".aliases.j2" %}
