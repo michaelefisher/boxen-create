@@ -8,6 +8,8 @@ ANSIBLE_VAULT_PASSWORD_FILE='/Users/michael/boxen-create/ansible_password'
 help="Ansible provisioning wrapper\n\nUsage:\n\n./provision.sh --tags \$1 --limit \$2\n\nYou can add multiple comma-separated tags and limits.\n\nExample:\n\n./provision.sh --tags files --limit kermit-the-frog"
 version=1.0.0
 
+[[ -z "$1" ]] && echo "Must include either tags or limit flags." && exit;
+
 while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
   -V | --version )
     echo $version
@@ -25,6 +27,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     ;;
 esac; shift; done
 if [[ "$1" == '--' ]]; then shift; fi
+
 
 if [[ -f $ANSIBLE_VAULT_PASSWORD_FILE ]]; then
   echo "Running: main.yml for tags=$tags, limit=$limit"
