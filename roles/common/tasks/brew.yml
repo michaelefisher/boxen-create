@@ -9,7 +9,7 @@
 
 - name: Install homebrew items
   homebrew:
-    name: ['awscli', 'adns','augeas','autoconf','automake','bzip2','reattach-to-user-namespace','pgcli','coreutils','cscope','cmake','dialog','doctl','freetype','gdbm','gettext','giflib', 'git-lfs', 'gmp','gnupg','gnutls','icu4c','isl','irssi','jasper','jq','leptonica','libassuan','libevent','libffi','libgcrypt','libgpg-error','libidn2','libksba','libmpc','libpng','libpqxx','libtasn1','libtiff','libtool','libunistring','libusb','libyaml','lzo','kubernetes-cli','mpfr','nettle','nmap','node','npth','nvm','mas','macvim','openssl@1.1','pcre','pinentry','qt','rbenv','readline','rclone','s3cmd','telnet','the_silver_searcher','tmux','xz','yarn','watch','zlib']
+    name: "{{ brew_formual_list }}"
     update_homebrew: yes
     upgrade_all: yes
   tags:
@@ -17,15 +17,12 @@
 
 - name: Install homebrew cask items
   homebrew_cask:
-    name: "{{ item.name }}"
+    name: "{{ item }}"
     state: upgraded
-  with_items:
-    - { name: omnidisksweeper }
-    - { name: keybase }
-    - { name: google-cloud-sdk }
-#    - { name: docker } Use https://hub.docker.com/editions/community/docker-ce-desktop-mac/
+  loop: "{{ brew_cask_list }}"
   tags:
     - homebrew
+    - homebrew_cask
 
 - name: Where is the cache?
   command: "brew --cache"

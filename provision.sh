@@ -2,6 +2,7 @@
 
 set -o pipefail
 set -e
+set +x
 
 ANSIBLE_VAULT_PASSWORD_FILE='/Users/michael/boxen-create/ansible_password'
 
@@ -9,7 +10,7 @@ help="Ansible provisioning wrapper\n\nUsage:\n\n./provision.sh --tags \$1 --limi
 version=1.0.0
 
 [[ -z "$1" ]] && echo "Must include either tags or limit flags." && exit;
-
+POSITIONAL=()
 while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
   -V | --version )
     echo $version
@@ -25,13 +26,18 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     shift; echo -e $help
     exit
     ;;
+  *) # Allow for -v (and other native ansible-playbook flags)
+    POSITIONAL+=("$1")
+    ;;
 esac; shift; done
 if [[ "$1" == '--' ]]; then shift; fi
-
+set -- "${POSITIONAL[@]}"
 
 if [[ -f $ANSIBLE_VAULT_PASSWORD_FILE ]]; then
-  echo "Running: main.yml for tags=$tags, limit=$limit"
-  pipenv run ansible-playbook roles/common/main.yml -i hosts.yml --tags=$tags --limit=$limit
+  echo "Generating brew list for Ansible..."
+  bash -c ". brew_generate.sh"
+  echo "Running: main.yml for tags=$tags, limit=$limit $POSITIONAL"
+  pipenv run ansible-playbook roles/common/main.yml -i hosts.yml --tags=$tags --limit=$limit $POSITIONAL
 else
   echo "There should exist a password file: ansible_password"
 fi

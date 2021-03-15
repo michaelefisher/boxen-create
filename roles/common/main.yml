@@ -10,6 +10,8 @@
    - git_dir: "{{ home }}/git"
    - python_site: "{{ home}}/.local/bin/"
    - civis_redshift_user: "michaelfisher"
+   - brew_formula_list: "{{ lookup('file', 'templates/brew_formula.txt') }}"
+   - brew_cask_list: "{{ lookup('file', 'templates/brew_cask.txt') }}"
   environment:
    - PATH: "{{ ansible_env.PATH }}"
 

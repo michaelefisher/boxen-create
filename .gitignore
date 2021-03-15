@@ -15,3 +15,6 @@ logs/*
 # ignore private files
 private/*
 secrets/*
+
+# ignore generate brew formulas and casks
+roles/common/templates/brew_*.txt
