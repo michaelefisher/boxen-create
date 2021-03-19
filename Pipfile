@@ -9,6 +9,7 @@ verify_ssl = true
 cryptography = ">=3.3.2"
 python-digitalocean = "*"
 ansible = "*"
+ansible-lint = "*"
 
 [requires]
 python_version = "3.9.1"

@@ -1,0 +1,13 @@
+#! /usr/bin/env ansible-playbook
+
+---
+- hosts: digitalocean
+  roles:
+    - webservers
+  vars:
+   - user: "{{ ansible_env.LOGNAME }}"
+   - home: "{{ ansible_env.HOME }}"
+   - git_dir: "{{ home }}/git"
+   - python_site: "{{ home}}/.local/bin/"
+  environment:
+   - PATH: "{{ ansible_env.PATH }}"

@@ -11,8 +11,7 @@
     name:
       - nginx
       - python3-pip
-      - python-certbot-nginx
-  become: true
+  become: yes
   become_method: sudo
 
 - name: pip install python-requests

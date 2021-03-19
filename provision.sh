@@ -19,6 +19,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
   -t | --tags )
     shift; tags=$1
     ;;
+  -r | --roles )
+    shift; roles=$1
+    ;;
   -l | --limit )
     shift; limit=$1
     ;;
@@ -34,10 +37,16 @@ if [[ "$1" == '--' ]]; then shift; fi
 set -- "${POSITIONAL[@]}"
 
 if [[ -f $ANSIBLE_VAULT_PASSWORD_FILE ]]; then
-  echo "Generating brew list for Ansible..."
-  bash -c ". brew_generate.sh"
-  echo "Running: main.yml for tags=$tags, limit=$limit $POSITIONAL"
-  pipenv run ansible-playbook roles/common/main.yml -i hosts.yml --tags=$tags --limit=$limit $POSITIONAL
+  if [[ $roles == "main" ]]; then
+    echo "Generating brew list for Ansible..."
+    bash -c ". brew_generate.sh"
+  fi
+  echo "Running: $roles for tags=$tags, limit=$limit $POSITIONAL"
+  if [[ ! -z $tags ]]; then
+    pipenv run ansible-playbook ${roles}.yml -i hosts.yml --tags=$tags --limit=$limit $POSITIONAL
+  else
+    pipenv run ansible-playbook ${roles}.yml -i hosts.yml --limit=$limit $POSITIONAL
+  fi
 else
   echo "There should exist a password file: ansible_password"
 fi
