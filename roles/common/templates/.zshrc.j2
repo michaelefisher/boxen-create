@@ -53,25 +53,28 @@ function timestamp() {
 
 # some annoying rbenv stuffs
 if [[ -e $HOME/.rbenv ]]; then
-  export PATH="${HOME}/.rbenv/bin:${PATH}"
+  export PATH="$HOME/.rbenv/bin:$PATH"
   eval "$(rbenv init -)"
 fi
 
 # some annoying pyenv stuffs
 if [[ -e $HOME/.pyenv ]]; then
-  eval "$(pyenv init -)"
+	export PATH="$HOME/.pyenv/bin:$PATH"
+	eval "$(pyenv init -)"
+	eval "$(pyenv virtualenv-init -)"
 fi
+
 export LDFLAGS="-L/usr/local/opt/bzip2/lib -L/usr/local/opt/zlib/lib -L/usr/local/opt/openssl@1.1/lib"
 export CFLAGS="-I/usr/local/opt/bzip2/include -I/usr/local/opt/zlib/include -I/usr/local/opt/openssl@1.1/include -I$(xcrun --show-sdk-path)/usr/include -Wno-implicit-function-declaration"
 
-# add mysql and vs code
-export PATH=$PATH:/usr/local/opt/mysql-client/bin:/usr/local/opt/mysql@8.0/bin:$HOME/.pyenv/bin
-
 # more annoying google stuffs
 {% if ansible_os_family == "Darwin" %}
-export CLOUDSDK_PYTHON="$(brew --prefix)/opt/python@3.8/libexec/bin/python"
-source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+if [[ -z "$(brew --prefix)/Caskroom/google-cloud-sdk/google-cloud-sdk/" ]]; then
+	# export this if not using pyenv
+	# export CLOUDSDK_PYTHON="$(brew --prefix)/opt/python@3.8/libexec/bin/python"
+	source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+	source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+fi
 {% endif %}
 
 # tabtab source for serverless package

@@ -37,12 +37,12 @@ if [[ "$1" == '--' ]]; then shift; fi
 set -- "${POSITIONAL[@]}"
 
 if [[ -f $ANSIBLE_VAULT_PASSWORD_FILE ]]; then
-  if [[ $roles == "main" ]]; then
+  if [[ -z $tags || $tags == 'homebrew' ]]; then
     echo "Generating brew list for Ansible..."
     bash -c ". brew_generate.sh"
   fi
   echo "Running: $roles for tags=$tags, limit=$limit $POSITIONAL"
-  if [[ ! -z $tags ]]; then
+  if [[ -n $tags ]]; then
     pipenv run ansible-playbook ${roles}.yml -i hosts.yml --tags=$tags --limit=$limit $POSITIONAL
   else
     pipenv run ansible-playbook ${roles}.yml -i hosts.yml --limit=$limit $POSITIONAL

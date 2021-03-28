@@ -161,15 +161,15 @@
     args:
       chdir: "{{ home }}"
 
-  - name: Compile YouCompleteMe
-    command:
-      argv:
-        - ./install.py
-        - --clang-completer
-        - --ts-completer
-        - --js-completer
-        - --java-completer
-      chdir: "{{ home }}/.vim/bundle/YouCompleteMe"
+        #  - name: Compile YouCompleteMe
+        #    command:
+        #      argv:
+        #        - ./install.py
+        #        - --clang-completer
+        #        - --ts-completer
+        #        - --js-completer
+        #        - --java-completer
+        #      chdir: "{{ home }}/.vim/bundle/YouCompleteMe"
 
   - name: Write out POSIX-compatible .profile
     blockinfile:

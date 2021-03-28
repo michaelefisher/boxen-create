@@ -9,7 +9,7 @@
 
 - name: Install homebrew items
   homebrew:
-    name: "{{ brew_formual_list }}"
+    name: "{{ brew_formula_list }}"
     update_homebrew: yes
     upgrade_all: yes
   tags:
