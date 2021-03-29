@@ -37,7 +37,7 @@ if [[ "$1" == '--' ]]; then shift; fi
 set -- "${POSITIONAL[@]}"
 
 if [[ -f $ANSIBLE_VAULT_PASSWORD_FILE ]]; then
-  if [[ -z $tags || $tags == 'homebrew' ]]; then
+  if [[ -z $tags || $tags == "homebrew"* ]]; then
     echo "Generating brew list for Ansible..."
     bash -c ". brew_generate.sh"
   fi

@@ -6,6 +6,9 @@
   with_items:
     - { name: homebrew/cask }
     - { name: homebrew/cask-drivers }
+  tags:
+    - homebrew
+    - homebrew_cask
 
 - name: Install homebrew items
   homebrew:
@@ -17,9 +20,8 @@
 
 - name: Install homebrew cask items
   homebrew_cask:
-    name: "{{ item }}"
+    name: "{{ brew_cask_list }}"
     state: upgraded
-  loop: "{{ brew_cask_list }}"
   tags:
     - homebrew
     - homebrew_cask
@@ -29,5 +31,6 @@
   register: homebrew_cache_path
   tags:
     - homebrew
+    - homebrew_cask
   notify:
     - "homebrew_cache_clear"

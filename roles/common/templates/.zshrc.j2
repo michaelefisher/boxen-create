@@ -69,11 +69,9 @@ export CFLAGS="-I/usr/local/opt/bzip2/include -I/usr/local/opt/zlib/include -I/u
 
 # more annoying google stuffs
 {% if ansible_os_family == "Darwin" %}
-if [[ -z "$(brew --prefix)/Caskroom/google-cloud-sdk/google-cloud-sdk/" ]]; then
-	# export this if not using pyenv
-	# export CLOUDSDK_PYTHON="$(brew --prefix)/opt/python@3.8/libexec/bin/python"
-	source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-	source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+if [[ -n "$(brew --prefix)/Caskroom/google-cloud-sdk/google-cloud-sdk/" ]]; then
+  source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+  source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
 fi
 {% endif %}
 
