@@ -7,12 +7,12 @@ function set_verbose() {
 }
 
 function create_csr() {
-  curr_dir=pwd;
+  curr_dir=`pwd`;
   if [[ $curr_dir != "${HOME}/boxen-create/private" ]]; then
     cd $HOME/boxen-create/private;
   fi
   timestamp="$(date +%s)"
-  generated_key="key-${timestamp}"
+  generated_key="private_smime_key_${timestamp}.pem"
 
   echo -n "$key_file"
 
@@ -28,7 +28,15 @@ function create_csr() {
 }
 
 function generate_pkcs() {
-  /usr/local/opt/openssl@1.1/bin/openssl pkcs12 -export -clcerts -inkey $key_file -in $crt -out $key_file.p12 -name "Michael E Fisher"
+  echo -e "Writing out p12 file to..."${key_file}.p12""
+  key_file_real=$(realpath -s $key_file)
+  crt_real=$(realpath -s $crt)
+  /usr/local/opt/openssl@1.1/bin/openssl pkcs12 -export -clcerts -inkey $key_file_real -in $crt_real -out $key_file.p12 -name "Michael E Fisher"
+  if [[ $? == 0 ]]; then
+    echo -e "p12 file written successfully."
+  else
+    echo -e "Writing failed."
+  fi
 }
 
 while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
@@ -39,6 +47,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     echo $version
     exit
     ;;
+  -t | --cert )
+    shift; crt=$1
+    ;;
   -k | --key )
     shift; key_file=$1
     ;;
@@ -47,7 +58,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     exit;
     ;;
   -p | --p12)
-    csr=$1; generate_pkcs;
+    generate_pkcs;
     exit;
     ;;
 
