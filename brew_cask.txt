@@ -3,3 +3,4 @@ keybase
 google-cloud-sdk
 signal
 calibre
+garmin-express
