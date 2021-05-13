@@ -5,3 +5,5 @@ signal
 calibre
 garmin-express
 docker
+google-chrome-beta
+zoom

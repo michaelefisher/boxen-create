@@ -52,3 +52,8 @@ alias deploy="deploy $1"
 # ansible local
 # Usage: ansible kermit-the-frog or ansible `whoami`
 alias ansible="pipenv run roles/common/main.yml -i hosts.yml -l $1"
+
+# dockerized psql
+if [[ `docker info > /dev/null 2>&1` -eq 0 ]]; then
+	alias pg="docker run -it --rm postgres psql -h host.docker.internal --set=sslmode=require"
+fi

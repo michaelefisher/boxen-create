@@ -27,12 +27,14 @@ def read_config():
 
     return droplets
 
+
 def read_secrets():
     digital_ocean_token = input("DIGITAL OCEAN TOKEN: ")
     if digital_ocean_token and len(digital_ocean_token) > 0:
         print("First five characters of token entered are %s" % digital_ocean_token[0:5])
 
     return digital_ocean_token
+
 
 def droplet_manager_api():
     manager = digitalocean.Manager(token=DIGITAL_OCEAN_TOKEN)
@@ -47,7 +49,7 @@ def droplet_droplet_api(name, size=DEFAULT_SIZE, tags=[]):
         user_data = f.read()
     logging.warning('Adding user data...\n %s' % user_data)
 
-    droplet = digitalocean.Droplet(token=os.getenv('DIGITAL_OCEAN_TOKEN'),
+    droplet = digitalocean.Droplet(token=DIGITAL_OCEAN_TOKEN,
                                    name=name,
                                    region='nyc3',  # New York 3
                                    image='ubuntu-20-04-x64',  # Ubuntu 20.04 x64

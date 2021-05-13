@@ -6,6 +6,7 @@
   with_items:
     - { name: homebrew/cask }
     - { name: homebrew/cask-drivers }
+    - { name: homebrew/cask-versions }
   tags:
     - homebrew
     - homebrew_cask
@@ -21,7 +22,8 @@
 - name: Install homebrew cask items
   homebrew_cask:
     name: "{{ brew_cask_list }}"
-    state: upgraded
+    greedy: yes
+    upgrade_all: yes
   tags:
     - homebrew
     - homebrew_cask

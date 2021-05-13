@@ -1,0 +1,11 @@
+---
+- name: Install nvm
+  shell: >
+    curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | sh
+    creates="{{ home }}/.nvm/nvm.sh"
+
+- name: Install node
+  shell: >
+    /bin/bash -c "source ~/.nvm/nvm.sh && nvm install node"
+    creates="{{ home }}/.nvm/alias"
+

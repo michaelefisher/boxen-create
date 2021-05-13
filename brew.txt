@@ -68,7 +68,6 @@ nghttp2
 nmap
 node
 npth
-nvm
 oniguruma
 openjpeg
 openssl@1.1
@@ -89,9 +88,11 @@ ruby
 ruby-build
 s3cmd
 sqlite
+stow
 tcl-tk
 telnet
 the_silver_searcher
+tree
 tmux
 unbound
 utf8proc
