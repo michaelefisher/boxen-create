@@ -1,4 +1,5 @@
 omnidisksweeper
+omnifocus
 keybase
 google-cloud-sdk
 signal
