@@ -11,6 +11,7 @@
    - zsh_custom: "{{ home }}/.oh-my-zsh/custom"
    - git_dir: "{{ home }}/git"
    - python_site: "{{ home}}/.local/bin/"
+   - pyenv_shims: "{{ home }}/.pyenv/shims"
    - civis_redshift_user: "michaelfisher"
    - brew_formula_list: "{{ lookup('file', 'templates/brew_formulas.txt') }}"
    - brew_cask_list: "{{ lookup('file', 'templates/brew_cask.txt') }}"

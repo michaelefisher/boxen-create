@@ -164,7 +164,7 @@
   - name: Compile YouCompleteMe
     shell:
     args:
-      cmd: "cd {{ home }}/.vim/bundle/YouCompleteMe && sudo python3 install.py --ts-completer --js-completer --rust-completer"
+      cmd: "cd {{ home }}/.vim/bundle/YouCompleteMe && {{ pyenv_shims}}/python3.9 install.py --ts-completer --js-completer --rust-completer"
     become: true
     become_method: sudo
 

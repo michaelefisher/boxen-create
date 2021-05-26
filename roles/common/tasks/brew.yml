@@ -1,4 +1,12 @@
 ---
+- name: Install vim with python
+  homebrew:
+    name: vim
+    state: latest
+    install_options: with-python
+  tags:
+    - homebrew
+
 - name: Tap some repos
   homebrew_tap:
     name: "{{ item.name }}"
@@ -15,6 +23,7 @@
   homebrew:
     name: "{{ brew_formula_list }}"
     update_homebrew: yes
+    state: latest
     upgrade_all: yes
   tags:
     - homebrew
@@ -22,6 +31,7 @@
 - name: Install homebrew cask items
   homebrew_cask:
     name: "{{ brew_cask_list }}"
+    state: present
     greedy: yes
     upgrade_all: yes
   tags:

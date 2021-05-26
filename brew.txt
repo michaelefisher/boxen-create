@@ -58,7 +58,6 @@ little-cms2
 lua
 lzo
 m4
-macvim
 mas
 mpdecimal
 mpfr

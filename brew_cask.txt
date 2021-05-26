@@ -8,3 +8,4 @@ garmin-express
 docker
 google-chrome-beta
 zoom
+macvim
