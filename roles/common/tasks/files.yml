@@ -26,6 +26,7 @@
       path: "{{ item }}"
       state: directory
       owner: "{{ user }}"
+      mode: "0755"
     with_items:
       - "{{ git_dir }}"
       - "{{ home }}/.vim"
@@ -69,12 +70,14 @@
       dest: "{{ home }}/.oh-my-zsh"
       accept_hostkey: yes
       track_submodules: no
+      version: "HEAD"
       force: yes
 
   - name: Install powerlevel10k zsh theme
     git:
       repo: "ssh://git@github.com/romkatv/powerlevel10k.git"
       dest: "{{ zsh_custom }}/themes/powerlevel10k"
+      version: "HEAD"
 
   - name: Symlink powerlevel10k into place
     file:
@@ -86,6 +89,7 @@
     git:
       repo: "ssh://git@github.com/tmux-plugins/tpm.git"
       dest: "{{ home }}/.tmux/plugins/tpm"
+      version: "HEAD"
 
   - name: Template out home directory files
     template:
@@ -138,8 +142,9 @@
       accept_hostkey: yes
       track_submodules: no
       force: yes
+      version: "{{ item.version }}"
     with_items:
-      - { org: 'powerline', name: 'fonts' }
+      - { org: 'powerline', name: 'fonts', version: 'HEAD' }
 
   - name: Install Vundle
     git:
@@ -147,6 +152,7 @@
       dest: "{{ home }}/.vim/bundle/Vundle.vim"
       accept_hostkey: yes
       force: yes
+      version: "HEAD"
 
   - name: Install nvm
     command: "./install_nvm.sh"
@@ -158,13 +164,15 @@
 
   - name: Bundle some vundle (and other things)
     command: "vim +PluginInstall +qall"
+    changed_when: True
     args:
       chdir: "{{ home }}"
 
   - name: Compile YouCompleteMe
     shell:
     args:
-      cmd: "cd {{ home }}/.vim/bundle/YouCompleteMe && {{ pyenv_shims}}/python3.9 install.py --ts-completer --js-completer --rust-completer"
+      cmd: "cd {{ home }}/.vim/bundle/YouCompleteMe && {{ pyenv_shims }}/python3.9 install.py --ts-completer --js-completer --rust-completer"
+    changed_when: true
     become: true
     become_method: sudo
 
@@ -174,8 +182,10 @@
       insertafter: EOF
       create: yes
       content: "source ~/.zshrc"
+      mode: 0644
 
   - name: Install powerline shell fonts
     command: "./install.sh"
+    changed_when: True
     args:
       chdir: "{{ git_dir }}/fonts"

@@ -25,6 +25,7 @@
    path: "/etc/letsencrypt/"
    state: directory
    owner: root
+   mode: "0755"
   become: true
   become_method: sudo
 
