@@ -18,8 +18,9 @@ Example:
 ./provision.sh -r main -t files -l kermit-the-frog
 ```
 
-
 Ansible will ask for your `become` password -- that is, a password for the `ansible_user` that is in the `sudoers` group on the remote machine.
+
+On push to remote, `ansible-lint` will run in GitHub actions. The configuration for linting is stored in `.ansible-lint`.
 
 ### Example Run
 
