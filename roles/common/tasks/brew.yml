@@ -2,7 +2,7 @@
 - name: Install vim with python
   homebrew:
     name: vim
-    state: latest
+    state: present
     install_options: with-python
   tags:
     - homebrew
@@ -23,7 +23,7 @@
   homebrew:
     name: "{{ brew_formula_list }}"
     update_homebrew: yes
-    state: latest
+    state: present
     upgrade_all: yes
   tags:
     - homebrew
@@ -40,9 +40,10 @@
 
 - name: Where is the cache?
   command: "brew --cache"
+  changed_when: True
   register: homebrew_cache_path
   tags:
     - homebrew
     - homebrew_cask
   notify:
-    - "homebrew_cache_clear"
+    - "Homebrew cache clear"
