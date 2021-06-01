@@ -11,6 +11,7 @@
       - '.vim/'
       - '.vimrc'
       - '.npmrc'
+      - '.nvm/'
       - '.gitignore'
       - '.gitconfig'
       - '.tmux.conf'
@@ -73,11 +74,15 @@
       version: "HEAD"
       force: yes
 
-  - name: Install powerlevel10k zsh theme
+  - name: Install zsh
     git:
-      repo: "ssh://git@github.com/romkatv/powerlevel10k.git"
-      dest: "{{ zsh_custom }}/themes/powerlevel10k"
-      version: "HEAD"
+      repo: "ssh://git@github.com/{{ item.org }}/{{ item.name }}.git"
+      dest: "{{ zsh_custom }}/{{ item.dir }}/{{ item.name }}"
+      version: "{{ item.version }}"
+    with_items:
+      - { org: romkatv, name: powerlevel10k, dir: themes, version: HEAD }
+      - { org: mroth, name: evalcache, dir: plugins, version: HEAD }
+      - { org: lukechilds, name: zsh-nvm, dir: plugins, version: HEAD }
 
   - name: Symlink powerlevel10k into place
     file:
@@ -106,7 +111,6 @@
       - { src: '.zshrc.j2', dest: "{{ home }}/.zshrc", owner: "{{ user }}", mode: "0644" }
       - { src: '.inputrc.j2', dest: "{{ home }}/.inputrc", owner: "{{ user }}", mode: "0644" }
       - { src: 'gpg.conf.j2', dest: "{{ home }}/.gnupg/gpg.conf", owner: "{{ user }}", mode: "0644" }
-      - { src: 'install_nvm.sh.j2', dest: "/opt/{{ user }}/install_nvm.sh", owner: "{{ user }}", mode: "0700" }
       - { src: '.config/pgcli/config', dest: "{{ home }}/.config/pgcli/config", owner: "{{ user }}", mode: "0644" }
       - { src: '.ssh/rc.j2', dest: "{{ home }}/.ssh/rc", owner: "{{ user }}", mode: "0644" }
 
@@ -153,14 +157,6 @@
       accept_hostkey: yes
       force: yes
       version: "HEAD"
-
-  - name: Install nvm
-    command: "./install_nvm.sh"
-    args:
-      chdir: "/opt/{{ user }}"
-      creates: "{{ home }}/.nvm"
-    become: true
-    become_method: sudo
 
   - name: Bundle some vundle (and other things)
     command: "vim +PluginInstall +qall"

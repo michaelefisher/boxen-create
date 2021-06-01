@@ -51,7 +51,3 @@
   tags:
     - python
 
-- include: node.yml
-  tags:
-    - node
-

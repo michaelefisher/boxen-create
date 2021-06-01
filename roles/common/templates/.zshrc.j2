@@ -1,10 +1,10 @@
 ## load zsh stuff early
+zmodload zsh/zprof
 export ZSH=$HOME/.oh-my-zsh
-plugins=(z)
+plugins=(z evalcache zsh-nvm)
 export ZSH_THEME="powerlevel10k/powerlevel10k"
 source $ZSH/oh-my-zsh.sh
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
-
 
 ## aliases
 if [ -f ~/.aliases ]; then
@@ -51,19 +51,6 @@ function timestamp() {
   date -j -f "%b %d %T %Z %Y" "${1}" "+%s"
 }
 
-# some annoying rbenv stuffs
-if [[ -e $HOME/.rbenv ]]; then
-  export PATH="$HOME/.rbenv/bin:$PATH"
-  eval "$(rbenv init -)"
-fi
-
-# some annoying pyenv stuffs
-if [[ -e $HOME/.pyenv ]]; then
-	export PATH="$HOME/.pyenv/bin:$PATH"
-	eval "$(pyenv init -)"
-	eval "$(pyenv virtualenv-init -)"
-fi
-
 export LDFLAGS="-L/usr/local/opt/bzip2/lib -L/usr/local/opt/zlib/lib -L/usr/local/opt/openssl@1.1/lib"
 export CFLAGS="-I/usr/local/opt/bzip2/include -I/usr/local/opt/zlib/include -I/usr/local/opt/openssl@1.1/include -I$(xcrun --show-sdk-path)/usr/include -Wno-implicit-function-declaration"
 
@@ -85,9 +72,6 @@ fi
 # uninstall by removing these lines or running `tabtab uninstall slss`
 [ -f ${HOME}/.nvm/versions/node/v6.14.2/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.bash ] && . ${HOME}/.nvm/versions/node/v6.14.2/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.bash
 
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # tabtab source for packages
 # uninstall by removing these lines
@@ -114,6 +98,19 @@ tags() {
 		popd
 	fi
 }
+
+# some annoying rbenv stuffs
+if [[ -e $HOME/.rbenv ]]; then
+  export PATH="$HOME/.rbenv/bin:$PATH"
+  _evalcache rbenv init -
+fi
+
+# some annoying pyenv stuffs
+if [[ -e $HOME/.pyenv ]]; then
+	export PATH="$HOME/.pyenv/bin:$PATH"
+	_evalcache pyenv init -
+	eval "$(pyenv virtualenv-init -)"
+fi
 
 # Export PATH here
 export PATH="/usr/local/sbin:$PATH"
