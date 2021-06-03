@@ -57,3 +57,5 @@ alias ansible="pipenv run roles/common/main.yml -i hosts.yml -l $1"
 if [[ `docker info > /dev/null 2>&1` -eq 0 ]]; then
 	alias pg="docker run -it --rm postgres psql -h host.docker.internal --set=sslmode=require"
 fi
+
+alias flushcache="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
