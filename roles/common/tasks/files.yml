@@ -1,7 +1,7 @@
 #! /usr/bin/env ansible-playbook
 
 ---
-  - name: delete things that we don't want
+  - name: Delete things that we don't want
     file:
       path: "{{ home }}/{{ item }}"
       state: absent
@@ -21,6 +21,16 @@
       - '{{ zsh_custom }}'
     become: true
     become_method: sudo
+
+  - name: Install certificates and trust them
+    command: "security add-trusted-cert -r trustRoot -k /Library/Keychains/System.keychain -d {{ item.location }}/{{ item.src }}"
+    with_items:
+      - { src: 'NextDNS.cer', location: '{{ home }}/boxen-create/roles/common/templates' }
+    become: yes
+    become_method: sudo
+    when: ansible_os_family == "Darwin"
+    tags:
+      - security
 
   - name: Make some dirs
     file:

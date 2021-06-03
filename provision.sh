@@ -37,6 +37,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
     brew_generate
     exit
     ;;
+  -s | --security )
+    skip_tags="false"
+    ;;
   -h | --help )
     shift; echo -e $help
     exit
@@ -50,13 +53,16 @@ set -- "${POSITIONAL[@]}"
 if [[ -f $ANSIBLE_VAULT_PASSWORD_FILE ]]; then
    brew_generate;
    echo "Running: $roles for tags=$tags, limit=$limit $POSITIONAL"
-  if [[ -n $tags ]]; then
+  if [[ -n $skip_tags ]]; then
+    echo "Running with security tag, installing trusted root CA certificates..."
     pipenv run ansible-playbook ${roles}.yml -i hosts.yml --tags=$tags --limit=$limit $POSITIONAL
+  elif [[ -n $tags ]]; then
+    pipenv run ansible-playbook ${roles}.yml -i hosts.yml --tags=$tags --skip-tags="security" --limit=$limit $POSITIONAL
   else
     pipenv run ansible-playbook ${roles}.yml -i hosts.yml --limit=$limit $POSITIONAL
   fi
 else
-  echo "There should exist a password file: ansible_password"
+  echo "There should exist a password file: ./ansible_password"
 fi
 
 
