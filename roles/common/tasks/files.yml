@@ -7,7 +7,6 @@
       state: absent
       force: yes
     with_items:
-      - '.bashrc'
       - '.vim/'
       - '.vimrc'
       - '.npmrc'
@@ -49,9 +48,6 @@
 
   - name: Read encrypted ssh config
     include_vars: templates/.ssh/config.yml.j2.enc
-
-  - name: Read in databases config
-    include_vars: databases.yml
 
   - name: Read encrypted s3cfg
     include_vars: templates/.s3cfg.enc
@@ -121,7 +117,6 @@
       - { src: '.zshrc.j2', dest: "{{ home }}/.zshrc", owner: "{{ user }}", mode: "0644" }
       - { src: '.inputrc.j2', dest: "{{ home }}/.inputrc", owner: "{{ user }}", mode: "0644" }
       - { src: 'gpg.conf.j2', dest: "{{ home }}/.gnupg/gpg.conf", owner: "{{ user }}", mode: "0644" }
-      - { src: '.config/pgcli/config', dest: "{{ home }}/.config/pgcli/config", owner: "{{ user }}", mode: "0644" }
       - { src: '.ssh/rc.j2', dest: "{{ home }}/.ssh/rc", owner: "{{ user }}", mode: "0644" }
 
   - name: Copy zshrc-mini into ~/Documents dir
@@ -179,8 +174,6 @@
     args:
       cmd: "cd {{ home }}/.vim/bundle/YouCompleteMe && {{ pyenv_shims }}/python3.9 install.py --ts-completer --js-completer --rust-completer"
     changed_when: true
-    become: true
-    become_method: sudo
 
   - name: Write out POSIX-compatible .profile
     blockinfile:
@@ -195,3 +188,6 @@
     changed_when: True
     args:
       chdir: "{{ git_dir }}/fonts"
+
+  - name: Install Chrome extension for external application opening
+    command: "bash {{ home }}/boxen-create/roles/common/templates/browser/extensions/external_application/mac/install.sh"

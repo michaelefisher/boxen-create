@@ -4,10 +4,11 @@ set -o pipefail
 set -e
 set +x
 
-ANSIBLE_VAULT_PASSWORD_FILE='/Users/michael/boxen-create/ansible_password'
+CURR_DIR=$(pwd -P);
+ANSIBLE_VAULT_PASSWORD_FILE="$CURR_DIR/.ansible_password";
 
-help="Ansible provisioning wrapper\n\nUsage:\n\n./provision.sh --tags \$1 --limit \$2\n\nYou can add multiple comma-separated tags and limits.\n\nExample:\n\n./provision.sh --tags files --limit kermit-the-frog"
-version=1.1.0
+help="Ansible provisioning wrapper\n\nUsage:\n\n./provision.sh --tags \$1 --limit \$2\n\nYou can add multiple comma-separated tags and limits.\n\nExample:\n\n./provision.sh --tags files --limit kermit-the-frog";
+version=1.2.0
 
 function brew_generate() {
  if [[ -z $tags || $tags == "homebrew"* ]]; then
@@ -62,7 +63,7 @@ if [[ -f $ANSIBLE_VAULT_PASSWORD_FILE ]]; then
     pipenv run ansible-playbook ${roles}.yml -i hosts.yml --limit=$limit $POSITIONAL
   fi
 else
-  echo "There should exist a password file: ./ansible_password"
+  echo "There should exist a password file: .ansible_password"
 fi
 
 

@@ -2,19 +2,20 @@
 *.retry
 
 # Ansible password file
-ansible_password
+.ansible_password
 
 # ignore IDE
 *idea*
   ControlPath ~/.ssh/sockets/%r@%h:%p
 
-*DS_Store*
+*.DS_Store*
 # ignore ansible logs
 logs/*
 
 # ignore private files
 private/*
 secrets/*
+clients/*
 
 # ignore generate brew formulas and casks
 roles/common/templates/brew_*.txt

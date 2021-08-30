@@ -9,3 +9,5 @@ docker
 google-chrome-beta
 zoom
 macvim
+1password-cli
+
