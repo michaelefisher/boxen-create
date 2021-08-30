@@ -22,7 +22,6 @@ for key in "michaelfisher"; do
 done
 
 export GIT="$HOME/git"
-
 function dateu() {
   date --date="@$1"
 }
@@ -111,6 +110,16 @@ if [[ -e $HOME/.pyenv ]]; then
 	_evalcache pyenv init -
 	eval "$(pyenv virtualenv-init -)"
 fi
+
+# 1Password
+1p () {
+	if [[ $1 != "" ]]; then
+   		echo -n "op signin ${1}\n\n";
+		eval $(op signin $1);
+	else
+		echo -n "Usage: 1p <account>\n";
+	fi
+}
 
 # Export PATH here
 export PATH="/usr/local/sbin:$PATH"

@@ -101,3 +101,5 @@ xz
 yarn
 zlib
 zstd
+rclone
+helm
