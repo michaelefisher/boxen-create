@@ -127,6 +127,7 @@
       mode: "0644"
     become: true
     become_method: sudo
+    when: ansible_os_family == 'Darwin'
 
   - name: Copy into place .p10k file
     copy:
@@ -172,7 +173,7 @@
   - name: Compile YouCompleteMe
     shell:
     args:
-      cmd: "cd {{ home }}/.vim/bundle/YouCompleteMe && {{ pyenv_shims }}/python3.9 install.py --ts-completer --js-completer --rust-completer"
+      cmd: "cd {{ home }}/.vim/bundle/YouCompleteMe && {{ ansible_python_interpreter }} install.py --ts-completer --js-completer --rust-completer"
     changed_when: true
 
   - name: Write out POSIX-compatible .profile
@@ -191,3 +192,4 @@
 
   - name: Install Chrome extension for external application opening
     command: "bash {{ home }}/boxen-create/roles/common/templates/browser/extensions/external_application/mac/install.sh"
+    when: ansible_os_family == 'Darwin'

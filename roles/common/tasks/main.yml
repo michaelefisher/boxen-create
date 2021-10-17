@@ -11,6 +11,9 @@
       - libffi-dev
       - libyaml-dev
       - silversearcher-ag
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
   when: ansible_os_family == 'Debian'
   become: true
   become_method: sudo
