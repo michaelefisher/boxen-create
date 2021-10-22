@@ -45,8 +45,10 @@ set -g message-style 'fg=colour232 bg=colour16 bold'
 
 # Create new session, split single vertically and horizontally
 new
+{% if ansible_os_family == 'Darwin' %}
 splitw -h
 splitw -v
+{% endif %}
 setw -g mode-keys vi
 set -g default-terminal "screen-256color"
 bind h select-pane -L
