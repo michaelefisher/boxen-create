@@ -17,26 +17,42 @@
     - { name: homebrew/cask-versions }
   tags:
     - homebrew
-    - homebrew_cask
+
+# Install and remove homebrew formulas
 
 - name: Install homebrew items
   homebrew:
-    name: "{{ brew_formula_list }}"
+    name: "{{ lookup('file', 'templates/brew_requirements.txt') }}"
     update_homebrew: yes
-    state: present
+    state: upgraded
     upgrade_all: yes
   tags:
     - homebrew
 
+- name: Uninstall homebrew items
+  homebrew:
+    name: "{{ lookup('file', 'templates/brew_uninstall.txt') }}"
+    state: absent
+  tags:
+    - homebrew
+
+# Install and remove homebrew formulas
+
 - name: Install homebrew cask items
-  homebrew_cask:
-    name: "{{ brew_cask_list }}"
-    state: present
-    greedy: yes
+  homebrew:
+    name: "{{ lookup('file', 'templates/brew_cask_requirements.txt') }}"
+    state: upgraded
     upgrade_all: yes
   tags:
     - homebrew
-    - homebrew_cask
+
+- name: Uninstall homebrew cask items
+  homebrew:
+    name: "{{ lookup('file', 'templates/brew_cask_uninstall.txt') }}"
+    state: absent
+    sudo_password: "{{ ansible_become_password }}"
+  tags:
+    - homebrew
 
 - name: Where is the cache?
   command: "brew --cache"

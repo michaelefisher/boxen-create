@@ -1,0 +1,26 @@
+# Inserts a blank line between shell prompts
+add_newline = true
+
+[aws]
+disabled = true
+
+[git_status]
+ahead = "⇡${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+behind = "⇣${count}"
+
+[gcloud]
+format = 'on [$symbol$account(@$domain)(\($project\))]($style)  '
+
+[prompt]
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$nodejs\
+$terraform\
+$python\
+$ruby\
+$gcloud\

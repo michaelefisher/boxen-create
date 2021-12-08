@@ -1,26 +1,33 @@
 #!/usr/bin/env bash
 
-which -s brew
-if [[ $? == 0 ]]; then
-  formulas_installed=$(brew list -1)
-  formulas_requested=$(cat brew.txt | sort)
-else
-  echo 'Homebrew not installed. Please install Homebrew at https://brew.sh.\n'
-fi
+set -o pipefail
 
-if [[ `diff <(echo "$formulas_installed") <(echo "$formulas_requested")` ]]; then
-  echo "${formulas_requested}" | sed -e :a -e '$!N; s/\n/\", \"/; ta' | sed 's/^/\[\"/' | sed 's/$/\"\]/' > roles/common/templates/brew_formulas.txt
-fi
+freeze() {
+  which -s brew
+  if [[ $? == 0 ]]; then
+  sort -u <(brew list --full-name --formula -1) > brew_requirements.txt
+  echo -e "Freezing formula requirements...\n"
+  cat brew_requirements.txt
 
-which -s brew
-if [[ $? == 0 ]]; then
-  formulas_installed=$(brew list --cask -1)
-  formulas_requested=$(cat brew_cask.txt | sort)
-else
-  echo 'Homebrew not installed. Please install Homebrew at https://brew.sh.\n'
-fi
+  sort -u <(brew list --full-name --cask -1) > brew_cask_requirements.txt
+  echo -e "Freezing cask requirements...\n"
+  cat brew_cask_requirements.txt
 
-if [[ `diff <(echo "$formulas_installed") <(echo "$formulas_requested")` ]]; then
-  echo "${formulas_requested}" | sed -e :a -e '$!N; s/\n/\", \"/; ta' | sed 's/^/\[\"/' | sed 's/$/\"\]/' > roles/common/templates/brew_cask.txt
-fi
+  else
+    echo 'Homebrew not installed. Please install Homebrew at https://brew.sh.\n'
+  fi
+
+ }
+
+generate() {
+  # Generate diff for brew formulas
+  comm -3 brew_requirements.txt <(brew list --full-name --formula -1 | sort -u) | sed 's/^\t//' > /tmp/brew_uninstall.txt
+  cat /tmp/brew_uninstall.txt
+
+  # Generate diff for brew cask
+  comm -3 brew_cask_requirements.txt <(brew list --full-name --cask -1 | sort -u) | sed 's/^\t//' > /tmp/brew_cask_uninstall.txt
+  cat /tmp/brew_cask_uninstall.txt
+}
+
+$1
 

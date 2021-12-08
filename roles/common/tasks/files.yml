@@ -90,12 +90,6 @@
       - { org: mroth, name: evalcache, dir: plugins, version: HEAD }
       - { org: lukechilds, name: zsh-nvm, dir: plugins, version: HEAD }
 
-  - name: Symlink powerlevel10k into place
-    file:
-      src: "{{ zsh_custom }}/themes/powerlevel10k/powerlevel10k.zsh-theme"
-      dest: "{{ zsh_custom }}/themes/powerlevel10k.zsh-theme"
-      state: link
-
   - name: Install Tmux plugin manager
     git:
       repo: "ssh://git@github.com/tmux-plugins/tpm.git"
@@ -128,13 +122,6 @@
     become: true
     become_method: sudo
     when: ansible_os_family == 'Darwin'
-
-  - name: Copy into place .p10k file
-    copy:
-      src: "templates/.p10k.zsh.j2"
-      dest: "{{ home }}/.p10k.zsh"
-      owner: "{{ user }}"
-      mode: "0644"
 
   - name: Copy rmvim file into place
     get_url:
@@ -189,6 +176,18 @@
     changed_when: True
     args:
       chdir: "{{ git_dir }}/fonts"
+
+  - name: Create starship directory
+    file:
+      path: "{{ home }}/.config/"
+      state: directory
+
+  - name: Template out toml file
+    template:
+      src: "templates/.config/starship.toml.j2"
+      dest: "{{ home }}/.config/starship.toml"
+      owner: "{{ user }}"
+      mode: "0644"
 
   - name: Install Chrome extension for external application opening
     command: "bash {{ home }}/boxen-create/roles/common/templates/browser/extensions/external_application/mac/install.sh"

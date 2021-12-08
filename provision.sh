@@ -8,12 +8,20 @@ ANSIBLE_VAULT_PASSWORD_FILE="$CURR_DIR/.ansible_password";
 SCRIPT_DIRECTORY="$HOME/boxen-create";
 
 help="Ansible provisioning wrapper\n\nUsage:\n\n./provision.sh --tags \$1 --limit \$2\n\nYou can add multiple comma-separated tags and limits.\n\nExample:\n\n./provision.sh --tags files --limit kermit-the-frog";
-version=2.0.0
+version=2.1.0
 
 function brew_generate() {
  if [[ -z $tags || $tags == "homebrew"* ]]; then
-    echo "Generating brew list for Ansible..."
-    (cd $SCRIPT_DIRECTORY && bash -c ". brew_generate.sh")
+    echo -e "Generating change list for homebrew formulas\n"
+    (cd $SCRIPT_DIRECTORY && bash -c ". brew_generate.sh generate")
+    # Format brew formula requirements
+    tr '\n' ',' < brew_requirements.txt | sed 's/,$//g' > roles/common/templates/brew_requirements.txt
+    tr '\n' ',' < /tmp/brew_uninstall.txt | sed 's/,$//g' > roles/common/templates/brew_uninstall.txt
+
+    # Format brew formula requirements
+    echo -e "Generating change list for homebrew casks\n"
+    tr '\n' ',' < brew_cask_requirements.txt | sed 's/,$//g' > roles/common/templates/brew_cask_requirements.txt
+    tr '\n' ',' < /tmp/brew_cask_uninstall.txt | sed 's/,$//g' > roles/common/templates/brew_cask_uninstall.txt
     echo "Done!"
   fi
 }
@@ -85,6 +93,7 @@ if [[ -f $ANSIBLE_VAULT_PASSWORD_FILE ]]; then
       hosts.yml --limit=$limit $POSITIONAL"
     [[ $dry_run == true ]] && echo $command || (eval $command)
   fi
+  [[ "$?" -eq 0 ]] && rm roles/common/templates/brew_uninstall.txt
 else
   echo "There should exist a password file: .ansible_password"
 fi
