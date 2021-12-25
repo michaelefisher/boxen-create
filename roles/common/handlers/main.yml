@@ -1,8 +1,0 @@
----
-- name: Homebrew cache clear
-  file:
-    path: "{{ homebrew_cache_path.stdout | trim }}"
-    state: absent
-  become_method: sudo
-  become: true
-
