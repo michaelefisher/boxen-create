@@ -31,8 +31,10 @@ def read_config():
 def read_secrets():
     digital_ocean_token = input("DIGITAL OCEAN TOKEN: ")
     if digital_ocean_token and len(digital_ocean_token) > 0:
-        print("First five characters of token entered are %s" % digital_ocean_token[0:5])
-
+        length = len(digital_ocean_token)
+        print(length)
+        print("Last five characters of token entered are %s" %\
+                digital_ocean_token[length - 5:])
     return digital_ocean_token
 
 
