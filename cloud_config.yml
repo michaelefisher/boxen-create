@@ -14,7 +14,7 @@ runcmd:
       zsh \
       gcc \
       cmake \
-      python3.8-dev \
+      python3.9-dev \
       python3-pip \
       libssl-dev \
       make \
@@ -22,8 +22,14 @@ runcmd:
       libutempter-dev \
       zlib1g-dev \
       tmux \
+      wget
   - |
-    snap install --classic chezmoi \
-    google-cloud-cli
+    snap install --classic chezmoi
   - sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes
+  - |
+    tmpfile=$(mktemp) \
+    && wget https://cache.agilebits.com/dist/1P/op2/pkg/v2.4.0/op_linux_amd64_v2.4.0.zip -O $tmpfile \
+    && unzip $tmpfile \
+    && mv ./op /usr/bin/ && rm op.sig
+
 
